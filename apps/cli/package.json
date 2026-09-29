@@ -1,0 +1,7 @@
+{
+  "name": "plumb",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Follow a VM through every layer of OpenStack and OpenSDN, from Keystone to the vRouter, in one tree.",
+  "license": "UNLICENSED"
+}

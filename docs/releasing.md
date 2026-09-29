@@ -2,24 +2,24 @@
 
 # วิธีออก release ของ plumb
 
-หน้านี้บอกขั้นตอนตั้งแต่บันทึกการเปลี่ยนแปลงจนได้ binary บน GitHub Release plumb ใช้ Changesets จัดการ version และ `CHANGELOG.md` และใช้ GoReleaser build binary ทั้งสองทำงานใน `.github/workflows/release.yml`
+หน้านี้บอกขั้นตอนตั้งแต่บันทึกการเปลี่ยนแปลงจนได้ binary บน GitHub Release plumb ใช้ Changesets จัดการ version และ `apps/cli/CHANGELOG.md` และใช้ GoReleaser build binary ทั้งสองทำงานใน `.github/workflows/release.yml`
 
-Version ของ plumb อยู่ใน `package.json` ไฟล์นี้เป็น `private` และมีไว้ให้ Changesets ใช้เท่านั้น ตัว plumb ไม่ได้ใช้ Node
+Version ของ plumb อยู่ใน `apps/cli/package.json` ไฟล์นี้เป็น `private` และมีไว้ให้ Changesets ใช้เท่านั้น ตัว plumb ไม่ได้ใช้ Node
 
 ## เพิ่ม changeset ใน PR
 
 ทุก PR ที่ผู้ใช้ควรรู้ ต้องมี changeset 1 ไฟล์
 
-1. ติดตั้ง Changesets ครั้งแรกบนเครื่อง:
+1. ติดตั้ง Changesets ครั้งแรกบนเครื่องด้วย [Bun](https://bun.sh):
 
    ```sh
-   npm install
+   bun install
    ```
 
 2. สร้าง changeset แล้วเลือกระดับของการเปลี่ยนแปลง:
 
    ```sh
-   npx changeset
+   bun changeset
    ```
 
 3. เขียนสรุปสำหรับผู้ใช้ ข้อความนี้จะอยู่ใน `CHANGELOG.md` และ release notes ตามที่เขียน
@@ -38,13 +38,13 @@ PR ที่ผู้ใช้ไม่เห็นผล เช่นแก้ 
 ## ออก release
 
 1. Merge PR ที่มี changeset เข้า `main`
-2. Workflow เปิดหรืออัปเดต PR ชื่อ "Version Packages" ซึ่ง bump version ใน `package.json` เขียน `CHANGELOG.md` และลบไฟล์ changeset ที่ใช้แล้ว
-3. ตรวจ `CHANGELOG.md` ใน PR นั้น ถ้าต้องการแก้ข้อความ ให้แก้ใน PR ได้เลย
+2. Workflow เปิดหรืออัปเดต PR ชื่อ "Version Packages" ซึ่ง bump version ใน `apps/cli/package.json` เขียน `apps/cli/CHANGELOG.md` และลบไฟล์ changeset ที่ใช้แล้ว
+3. ตรวจ `apps/cli/CHANGELOG.md` ใน PR นั้น ถ้าต้องการแก้ข้อความ ให้แก้ใน PR ได้เลย
 4. Merge PR "Version Packages" เมื่อพร้อมออก release
 
 PR "Version Packages" รวม changeset ทุกไฟล์ที่ merge เข้ามาจนถึงตอนนั้น ถ้ายังไม่อยากออก release ให้เปิด PR นั้นค้างไว้
 
-หลัง merge workflow สร้าง tag `vx.y.z` จาก version ใน `package.json` แล้ว GoReleaser build binary สำหรับ Linux และ macOS ทั้ง `amd64` และ `arm64` สร้าง GitHub Release ที่ใช้ส่วนของ version นั้นใน `CHANGELOG.md` เป็น release notes และแนบไฟล์ `.tar.gz` กับ `checksums.txt`
+หลัง merge workflow สร้าง tag `vx.y.z` จาก version ใน `apps/cli/package.json` แล้ว GoReleaser build binary สำหรับ Linux และ macOS ทั้ง `amd64` และ `arm64` สร้าง GitHub Release ที่ใช้ส่วนของ version นั้นใน `apps/cli/CHANGELOG.md` เป็น release notes และแนบไฟล์ `.tar.gz` กับ `checksums.txt`
 
 ## สิ่งที่ release ใส่ใน binary
 
@@ -64,4 +64,4 @@ goreleaser check
 goreleaser build --snapshot --clean --single-target
 ```
 
-ถ้าแก้ไฟล์ใน `.github/workflows/` ให้ตรวจด้วย `actionlint` ถ้าแก้ `.changeset/config.json` ให้ดูผลด้วย `npx changeset status`
+ถ้าแก้ไฟล์ใน `.github/workflows/` ให้ตรวจด้วย `actionlint` ถ้าแก้ `.changeset/config.json` ให้ดูผลด้วย `bun changeset status`

@@ -25,6 +25,6 @@ archives:
 checksum:
   name_template: checksums.txt
 
-# The release workflow passes the version's section of CHANGELOG.md, which
+# The release workflow passes the version's section of apps/cli/CHANGELOG.md, which
 # Changesets writes, as --release-notes. Keep the changelog pipe enabled:
 # disabling it also skips reading --release-notes.

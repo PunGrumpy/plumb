@@ -1,14 +1,19 @@
 {
-  "name": "plumb",
-  "version": "0.1.0",
+  "name": "plumb-monorepo",
   "private": true,
-  "description": "Follow a VM through every layer of OpenStack and OpenSDN, from Keystone to the vRouter, in one tree.",
-  "license": "UNLICENSED",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
     "changeset": "changeset",
     "version": "changeset version"
   },
   "devDependencies": {
-    "@changesets/cli": "^3.0.3"
-  }
+    "@changesets/cli": "^3.0.3",
+    "turbo": "^2.11.5"
+  },
+  "packageManager": "bun@1.4.2"
 }

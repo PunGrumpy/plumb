@@ -16,16 +16,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: apps/cli/go.mod
-      - name: Check formatting
-        run: |
-          unformatted=$(gofmt -l apps/cli)
-          if [ -n "$unformatted" ]; then
-            echo "Run gofmt -w on:" && echo "$unformatted"
-            exit 1
-          fi
-      - run: go vet ./...
-        working-directory: apps/cli
-      - run: go test -race ./...
-        working-directory: apps/cli
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      # check: gofmt and go vet for every Go module.
+      - run: bun turbo run check test build
       - name: Cross-compile every release platform
         run: make -C apps/cli dist

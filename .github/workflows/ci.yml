@@ -13,11 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: apps/cli/go.mod
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup-environment
       # check: Ultracite for the repo, gofmt and go vet for every Go module.
       - run: bun turbo run check test build
       - name: Cross-compile every release platform

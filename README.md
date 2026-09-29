@@ -7,28 +7,26 @@
   </picture>
 </p>
 
-# plumb ไล่ VM หนึ่งเครื่องผ่านทุกชั้นของ OpenStack และ OpenSDN
+# Follow a VM through every layer of OpenStack and OpenSDN
 
-plumb เป็น CLI ภาษา Go รับชื่อหรือ UUID ของ VM แล้วไล่ข้อมูลจาก Keystone, Nova และ Neutron ลงไปถึง OpenSDN Config API, control node และ vRouter agent บน compute ที่ VM อยู่ ผลลัพธ์เป็น tree เดียวที่เห็นทุกชั้น
+plumb is a Go CLI that takes a VM's name, UUID or IP and follows it from Keystone, Nova and Neutron down to the OpenSDN Config API, the control nodes and the vRouter agent on the VM's compute node. You get one tree that shows every layer.
 
-ลำดับ object ที่เชื่อมจาก VM ถึง route บน vRouter agent เรียกว่า chain ถ้าข้อมูลของ 2 ชั้นไม่ตรงกัน plumb บอกว่า chain หยุดที่ชั้นไหน ต้องตรวจอะไรต่อ และคำสั่งที่อธิบายปัญหานั้น
+The objects that link a VM to its route on the vRouter agent form a chain. When two layers disagree, plumb tells you where the chain stops, what to check next and which command explains the problem.
 
-## สิ่งที่ plumb แสดง
+## What plumb shows
 
-plumb เรียกเฉพาะ API ที่อ่านข้อมูล และแสดงผลของ 6 ชั้นในตารางนี้ ชั้นที่ 5 และ 6 เป็น introspect ซึ่งคือหน้า HTTP สำหรับ debug ที่ process ของ OpenSDN เปิดไว้
+plumb calls read-only APIs and reports on the six layers below. Layers 5 and 6 are introspect: the HTTP debug pages that every OpenSDN process serves.
 
-| ชั้น | Port | สิ่งที่ plumb แสดง |
+| Layer | Port | What plumb reads |
 | --- | --- | --- |
-| Keystone | ตาม `OS_AUTH_URL` | token, role และ endpoint จาก service catalog |
-| Nova | ตาม catalog | host, flavor, image และ port ที่ attach อยู่ |
-| Neutron | ตาม catalog | port, network, subnet, security group และ floating IP |
-| OpenSDN Config API | 8082 | virtual machine interface หรือ VMI, virtual network หรือ VN, routing instance หรือ RI และ route target หรือ RT |
-| Control node introspect | 8083 | route ของ VM และ session XMPP กับ compute |
-| vRouter agent introspect | 8085 | tap interface, VRF, route และ flow |
+| Keystone | from `OS_AUTH_URL` | Token, roles and endpoints from the service catalog |
+| Nova | from the catalog | Host, flavor, image and attached ports |
+| Neutron | from the catalog | Ports, networks, subnets, routers, security groups and floating IPs |
+| OpenSDN Config API | `8082` | Virtual machine interface (VMI), virtual network (VN), routing instance (RI) and route target (RT) |
+| Control node introspect | `8083` | The VM's routes and the Extensible Messaging and Presence Protocol (XMPP) session with the compute node |
+| vRouter agent introspect | `8085` | Tap interface, virtual routing and forwarding (VRF) table, routes and flows |
 
-XMPP ย่อมาจาก Extensible Messaging and Presence Protocol และ VRF ย่อมาจาก virtual routing and forwarding
-
-ตัวอย่างนี้เป็นส่วน port ของผลลัพธ์จาก lab จำลอง ผมตัดบรรทัดยาวด้วย `…` คำสั่ง `plumb demo` สร้างผลลัพธ์ทั้งหมด
+This is the port section of a trace against the built-in lab, with long lines cut at `…`. Run `plumb demo` to see the full output:
 
 ```text
 └─ Port      9c1e4d2b-7a3f-…  fa:16:3e:5a:12:7c  10.0.1.5
@@ -42,44 +40,48 @@ XMPP ย่อมาจาก Extensible Messaging and Presence Protocol แล�
       └─ route     10.0.1.5/32  local interface tap9c1e4d2b-7a  label 25
 ```
 
-## เริ่มต้นใช้งาน
+## Get started
 
-Build ด้วย Go 1.24 ขึ้นไป แล้วรัน lab ที่ฝังอยู่ใน binary ขั้นนี้ไม่ต้องมี cloud หรือ credential
+Build plumb with Go 1.24 or later, then trace a VM in the lab that ships inside the binary. You don't need a cloud or credentials for this step:
 
 ```sh
 make build
 ./bin/plumb demo
 ```
 
-บน cloud จริง ให้ใช้คำสั่งตามลำดับนี้
+On a real cloud, source your openrc and use the commands in this order:
 
-| คำสั่ง | ใช้เมื่อ |
+| Command | Use it when |
 | --- | --- |
-| `plumb demo [scenario]` | ลองใช้ครั้งแรก หรือดูว่าชั้นที่พังหน้าตาเป็นอย่างไร |
-| `plumb link --config-url <url>` | ครั้งแรกบนแต่ละ cloud ที่ใช้ OpenSDN เพื่อจำ URL ของ Config API |
-| `plumb doctor` | ครั้งแรกบนแต่ละเครื่อง เพื่อดูว่าเครื่องนั้นเข้าถึงชั้นไหนได้ |
-| `plumb <vm>` | ไล่ VM จากชื่อ, UUID, fixed IP หรือ floating IP |
-| `plumb path <from> <to>` | ได้รับแจ้งว่า VM สองเครื่องคุยกันไม่ได้ |
-| `plumb explain <code>` | อ่านความหมายของ code ในบรรทัด `More` |
-| `plumb whoami` | ดู user, project และ URL ของ OpenSDN ที่ plumb จะใช้ |
+| `plumb demo [scenario]` | You want to see a working trace, or how a broken layer looks |
+| `plumb link --config-url <url>` | You use a cloud that runs OpenSDN for the first time, so plumb remembers its Config API |
+| `plumb doctor` | You run plumb on a machine for the first time, to see which layers it reaches |
+| `plumb <vm>` | You trace a VM by name, UUID, fixed IP or floating IP |
+| `plumb path <from> <to>` | Someone reports that two VMs can't reach each other |
+| `plumb explain <code>` | A trace ends with a `More` line and you want the details |
+| `plumb whoami` | You want to see the user, project and OpenSDN URLs plumb uses |
 
-## เอกสาร
+To install plumb on a server, run `make dist` and copy the static binary for its platform from `dist/`.
 
-เลือกหน้าตามงานที่คุณจะทำ
+## Documentation
 
-| หน้า | อ่านเมื่อ |
+The guides in `docs/` are written in Thai:
+
+| Guide | Read it when |
 | --- | --- |
-| [รัน plumb ครั้งแรกกับ lab จำลอง](docs/quickstart.md) | อยากเห็นผลลัพธ์ทีละชั้นก่อนใช้กับ cloud จริง |
-| [วิธีใช้ plumb กับ DevStack และ lab OpenSDN](docs/run-against-a-lab.md) | จะติดตั้งบน server, link cloud และบันทึก lab |
-| [ตัวเลือกของ plumb](docs/cli-reference.md) | ต้องการรายการคำสั่ง, flag, environment variable, exit code และ JSON |
-| [request ของ VM ผ่านชั้นไหนบ้าง](docs/concepts.md) | อยากเข้าใจ Neutron plugin, schema transformer, XMPP, BGP, VRF และ overlay |
-| [คำเตือนแต่ละข้อของ plumb หมายถึงอะไร](docs/troubleshooting.md) | เจอ code ที่ไม่รู้จัก |
-| [API ที่ plumb เรียกในแต่ละชั้น](docs/api-reference.md) | ต้องเทียบ endpoint และ field กับ lab |
-| [plumb ออกแบบอย่างไร](docs/architecture.md) | จะแก้โค้ด |
-| [วิธีเพิ่ม stage ใหม่ให้ plumb](docs/add-a-stage.md) | จะเพิ่ม API ใหม่เข้า trace |
+| [Run plumb for the first time](docs/quickstart.md) | You want a step-by-step tour of the output before you use a real cloud |
+| [Use plumb with DevStack and OpenSDN](docs/run-against-a-lab.md) | You install plumb on a server, link a cloud or record a lab |
+| [CLI reference](docs/cli-reference.md) | You look up a command, flag, environment variable, exit code or JSON field |
+| [How a VM's request crosses each layer](docs/concepts.md) | You want to understand the Neutron plugin, the schema transformer, XMPP, BGP, VRFs and the overlay |
+| [What each warning means](docs/troubleshooting.md) | You get a code you don't know |
+| [APIs plumb calls](docs/api-reference.md) | You compare endpoints and fields with your lab |
+| [How plumb is built](docs/architecture.md) | You change the code |
+| [Add a stage](docs/add-a-stage.md) | You add a new API to the trace |
 
-## สิ่งที่ต้องขอก่อนใช้กับ environment จริง
+## Before you use plumb on a real environment
 
-Introspect ของ OpenSDN ไม่มี authentication ก่อนใช้กับ environment จริง ให้ขอสิทธิ์เข้า port 8082, 8083 และ 8085 จากพี่หมู plumb ไม่ส่ง Keystone token ไปที่ introspect และไม่เรียก API ที่แก้ไขข้อมูล
+OpenSDN introspect has no authentication. Ask the environment owner for access to ports `8082`, `8083` and `8085` from the machine that runs plumb. plumb never sends your Keystone token to introspect, and it never calls an API that changes state.
 
-โลโก้และกฎการใช้งานอยู่ใน [brand asset ของ plumb](brand/README.md)
+## Brand
+
+The logo, icons and usage rules are in [brand/README.md](brand/README.md).

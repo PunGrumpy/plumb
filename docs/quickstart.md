@@ -9,13 +9,13 @@
 เราต้องใช้ Go 1.24 ขึ้นไป ที่ root ของ repo ให้ build binary:
 
 ```sh
-make build
+make -C apps/cli build
 ```
 
 ตรวจว่า binary ทำงาน:
 
 ```sh
-./bin/plumb version
+./apps/cli/bin/plumb version
 ```
 
 ผลลัพธ์คือ `plumb` ตามด้วย version เช่น `plumb dev`
@@ -25,7 +25,7 @@ make build
 ตอนนี้ให้รัน demo:
 
 ```sh
-./bin/plumb demo
+./apps/cli/bin/plumb demo
 ```
 
 บรรทัดแรกบอก scenario ที่กำลังรัน ตามด้วย tree ที่ขึ้นต้นด้วย `VM web-01` ส่วนท้ายของผลลัพธ์เป็นแบบนี้:
@@ -69,7 +69,7 @@ Steps
 DevStack ใช้ OVN จึงไม่มี Config API ของ OpenSDN ให้เรียก scenario `devstack` รัน lab เดิมโดยไม่มี Config API:
 
 ```sh
-./bin/plumb demo devstack
+./apps/cli/bin/plumb demo devstack
 ```
 
 ส่วนท้ายเปลี่ยนเป็นแบบนี้:
@@ -90,7 +90,7 @@ port ใน scenario นี้มี `vif_type` เป็น `ovs` plumb จึ�
 ต่อไปเราจะเปิด scenario ที่ `control-02` ไม่มี route ของ VM:
 
 ```sh
-./bin/plumb demo missing-route
+./apps/cli/bin/plumb demo missing-route
 ```
 
 บรรทัด `Control` ของ `control-02` ใน tree กลายเป็น `10.0.1.5/32 ✗ missing` และผลลัพธ์จบด้วย 3 บรรทัดนี้:
@@ -104,7 +104,7 @@ port ใน scenario นี้มี `vif_type` เป็น `ovs` plumb จึ�
 บรรทัด `Hint` บอกสิ่งที่ต้องตรวจต่อ และบรรทัด `More` บอกคำสั่งที่อธิบายปัญหานี้ ให้รันคำสั่งนั้น:
 
 ```sh
-./bin/plumb explain route-missing
+./apps/cli/bin/plumb explain route-missing
 ```
 
 plumb พิมพ์ความหมายของ `route-missing`, สิ่งที่ต้องตรวจ และหัวข้อใน [คำเตือนแต่ละข้อของ plumb หมายถึงอะไร](troubleshooting.md)
@@ -114,7 +114,7 @@ plumb พิมพ์ความหมายของ `route-missing`, สิ�
 ขั้นสุดท้าย ให้ดูรายการ scenario ทั้งหมด:
 
 ```sh
-./bin/plumb demo --list
+./apps/cli/bin/plumb demo --list
 ```
 
 แต่ละ scenario ทำให้ชั้นหนึ่งพัง ลองรัน `agent-down` แล้วสังเกตว่าเครื่องหมายหน้าบรรทัดสุดท้ายเปลี่ยนเป็น `✗` และคำสั่งจบด้วย exit code `1` เพราะ stage `vrouter` เรียก API ไม่สำเร็จ ส่วน `missing-route` จบด้วย exit code `0` เพราะ API ทุกตัวตอบปกติ มีเพียงข้อมูลที่ไม่ตรงกัน

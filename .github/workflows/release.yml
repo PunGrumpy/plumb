@@ -52,7 +52,7 @@ jobs:
       - if: steps.tag.outputs.created == 'true'
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: apps/cli/go.mod
       - if: steps.tag.outputs.created == 'true'
         uses: goreleaser/goreleaser-action@v6
         with:

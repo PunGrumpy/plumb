@@ -53,7 +53,7 @@ GoReleaser ใส่ค่าเหล่านี้ตอน build ผ่า�
 - `main.version` เป็นชื่อ tag เช่น `v0.2.0` ซึ่ง `plumb version` แสดง
 - `main.updateURL` เป็น `https://api.github.com/repos/<owner>/<repo>/releases/latest` ของ repo ที่ build ทำให้ binary แจ้งเมื่อมี release ใหม่
 
-ถ้า build เองด้วย `make dist` โดยไม่ตั้ง `UPDATE_URL` binary จะไม่เช็ก version ใหม่
+ถ้า build เองด้วย `make -C apps/cli dist` โดยไม่ตั้ง `UPDATE_URL` binary จะไม่เช็ก version ใหม่
 
 ## ตรวจ config ก่อน push
 

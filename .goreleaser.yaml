@@ -4,7 +4,8 @@ version: 2
 project_name: plumb
 
 builds:
-  - main: ./cmd/plumb
+  - dir: apps/cli
+    main: ./cmd/plumb
     binary: plumb
     env: [CGO_ENABLED=0]
     goos: [linux, darwin]

@@ -11,20 +11,20 @@ plumb ต้องเข้าถึง introspect ของ vRouter agent บ�
 1. Build binary แบบ static บนเครื่องของคุณ:
 
    ```sh
-   make dist
+   make -C apps/cli dist
    ```
 
-   คำสั่งนี้สร้าง `dist/plumb-linux-amd64`, `dist/plumb-linux-arm64` และ `dist/plumb-darwin-arm64` ถ้าต้องการให้ binary แจ้งเมื่อมี version ใหม่ ให้ส่ง URL ที่ตอบ release ล่าสุด:
+   คำสั่งนี้สร้าง `apps/cli/dist/plumb-linux-amd64`, `apps/cli/dist/plumb-linux-arm64` และ `apps/cli/dist/plumb-darwin-arm64` ถ้าต้องการให้ binary แจ้งเมื่อมี version ใหม่ ให้ส่ง URL ที่ตอบ release ล่าสุด:
 
    ```sh
-   make dist VERSION=v0.1.0 \
+   make -C apps/cli dist VERSION=v0.1.0 \
    	UPDATE_URL=https://api.github.com/repos/your_org/plumb/releases/latest
    ```
 
 2. คัดลอก binary ที่ตรงกับ server:
 
    ```sh
-   scp dist/plumb-linux-amd64 your_user@your_bastion:~/bin/plumb
+   scp apps/cli/dist/plumb-linux-amd64 your_user@your_bastion:~/bin/plumb
    ```
 
 binary ไม่ต้องใช้ library อื่น server จึงไม่ต้องติดตั้ง Go
@@ -124,7 +124,7 @@ plumb ตรวจ port, router, security group ทั้ง 2 ฝั่ง แ�
 1. บันทึก lab ตามหัวข้อก่อนหน้า
 2. เปิดไฟล์ที่ชื่อขึ้นต้นด้วย `GET_` ตามด้วย IP ของ control node หรือ compute
 3. เทียบชื่อ element ในไฟล์กับตารางใน [API ที่ plumb เรียกในแต่ละชั้น](api-reference.md)
-4. ถ้าชื่อไม่ตรง ให้แก้ชื่อใน `internal/opensdn/control/control.go` หรือ `internal/opensdn/agent/agent.go`
+4. ถ้าชื่อไม่ตรง ให้แก้ชื่อใน `apps/cli/internal/opensdn/control/control.go` หรือ `apps/cli/internal/opensdn/agent/agent.go`
 
 อีกทางหนึ่งคือเปิด `http://control_node_ip:8083/` ใน browser หน้านั้นแสดงรายการ request ทั้งหมดของ process
 

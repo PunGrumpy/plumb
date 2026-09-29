@@ -2,7 +2,7 @@
 
 # API ที่ plumb เรียกในแต่ละชั้น
 
-หน้านี้รวม HTTP call ทุกตัวที่ plumb เรียก เรียงตาม stage และตามลำดับใน `internal/trace` แต่ละ call มี parameter, field ที่อ่าน และสิ่งที่ plumb ใช้ field นั้นทำ ไฟล์ใน `internal/demo/lab` เขียนตามรูปแบบในหน้านี้ ไม่ได้บันทึกจาก lab OpenSDN
+หน้านี้รวม HTTP call ทุกตัวที่ plumb เรียก เรียงตาม stage และตามลำดับใน `apps/cli/internal/trace` แต่ละ call มี parameter, field ที่อ่าน และสิ่งที่ plumb ใช้ field นั้นทำ ไฟล์ใน `apps/cli/internal/demo/lab` เขียนตามรูปแบบในหน้านี้ ไม่ได้บันทึกจาก lab OpenSDN
 
 ## ความคงที่ของ field
 

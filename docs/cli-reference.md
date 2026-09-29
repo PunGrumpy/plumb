@@ -2,7 +2,7 @@
 
 # ตัวเลือกของ plumb
 
-หน้านี้รวมคำสั่ง, flag, environment variable, exit code และรูปแบบ JSON ของ `plumb` ตรงกับโค้ดใน `cmd/plumb` และผลของ `plumb <command> -h`
+หน้านี้รวมคำสั่ง, flag, environment variable, exit code และรูปแบบ JSON ของ `plumb` ตรงกับโค้ดใน `apps/cli/cmd/plumb` และผลของ `plumb <command> -h`
 
 ## คำสั่ง
 
@@ -170,7 +170,7 @@ Content-Type: application/json
 {"server": {…}}
 ```
 
-ไฟล์เก็บเฉพาะ header `Content-Type` และ `X-Subject-Token` และ `--record` เขียน `recorded-token` แทนค่าจริงของ `X-Subject-Token` ไฟล์ไม่เก็บ request จึงไม่มี password lab ของ `plumb demo` ใช้รูปแบบเดียวกันและอยู่ใน `internal/demo/lab`
+ไฟล์เก็บเฉพาะ header `Content-Type` และ `X-Subject-Token` และ `--record` เขียน `recorded-token` แทนค่าจริงของ `X-Subject-Token` ไฟล์ไม่เก็บ request จึงไม่มี password lab ของ `plumb demo` ใช้รูปแบบเดียวกันและอยู่ใน `apps/cli/internal/demo/lab`
 
 ## Exit code
 
@@ -193,7 +193,7 @@ Content-Type: application/json
 
 ## JSON ของ trace
 
-`--json` พิมพ์ struct `Trace` ใน `internal/trace/model.go` แต่ละ stage ใน `steps` มี field เหล่านี้:
+`--json` พิมพ์ struct `Trace` ใน `apps/cli/internal/trace/model.go` แต่ละ stage ใน `steps` มี field เหล่านี้:
 
 | Field | ความหมาย |
 | --- | --- |

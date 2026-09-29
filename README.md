@@ -86,3 +86,7 @@ OpenSDN introspect has no authentication. Ask the environment owner for access t
 ## Brand
 
 The logo, icons and usage rules are in [brand/README.md](brand/README.md).
+
+## License
+
+plumb is released under the [MIT License](LICENSE).

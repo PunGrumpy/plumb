@@ -1,10 +1,12 @@
 {
   "name": "plumb-monorepo",
   "private": true,
+  "license": "MIT",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
+  "type": "module",
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",

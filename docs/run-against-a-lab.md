@@ -43,7 +43,7 @@ The binary needs no other libraries, so you don't need to install Go on the serv
    plumb link --config-url http://config_node_ip:8082
    ```
 
-   plumb saves this URL in `~/.config/plumb/config.json` with the cloud's `OS_AUTH_URL`. The `trace` and `doctor` commands then use this URL each time you source this cloud's openrc.
+   plumb saves this URL with the cloud's `OS_AUTH_URL` in its config file, `~/.config/plumb/config.json` by default. [CLI reference](cli-reference.md) explains how `XDG_CONFIG_HOME` and `PLUMB_CONFIG` change the path. The `trace` and `doctor` commands then use this URL each time you source this cloud's openrc.
 
 3. Run `doctor`:
 

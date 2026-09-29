@@ -1,5 +1,5 @@
-# GoReleaser runs after release-please tags a version. It builds the same
-# static binaries as `make dist` and attaches them to the GitHub release.
+# GoReleaser runs after the release workflow tags a version. It builds the
+# same static binaries as `make dist` and publishes them as a GitHub release.
 version: 2
 project_name: plumb
 
@@ -24,9 +24,7 @@ archives:
 checksum:
   name_template: checksums.txt
 
-# release-please writes CHANGELOG.md and the release notes.
+# Changesets writes CHANGELOG.md; the workflow passes the version's section
+# as --release-notes.
 changelog:
   disable: true
-
-release:
-  mode: keep-existing

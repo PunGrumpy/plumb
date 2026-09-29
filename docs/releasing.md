@@ -1,67 +1,67 @@
 <!-- contentType: How-to · plan: docs/content-plan.md -->
 
-# วิธีออก release ของ plumb
+# Release plumb
 
-หน้านี้บอกขั้นตอนตั้งแต่บันทึกการเปลี่ยนแปลงจนได้ binary บน GitHub Release plumb ใช้ Changesets จัดการ version และ `apps/cli/CHANGELOG.md` และใช้ GoReleaser build binary ทั้งสองทำงานใน `.github/workflows/release.yml`
+This page gives the steps from recording a change to getting binaries on a GitHub Release. plumb uses Changesets to manage the version and `apps/cli/CHANGELOG.md`, and GoReleaser to build binaries. Both run in `.github/workflows/release.yml`.
 
-Version ของ plumb อยู่ใน `apps/cli/package.json` ไฟล์นี้เป็น `private` และมีไว้ให้ Changesets ใช้เท่านั้น ตัว plumb ไม่ได้ใช้ Node
+plumb's version is in `apps/cli/package.json`. This file is `private` and exists only for Changesets. plumb itself doesn't use Node.
 
-## เพิ่ม changeset ใน PR
+## Add a changeset to your PR
 
-ทุก PR ที่ผู้ใช้ควรรู้ ต้องมี changeset 1 ไฟล์
+Every PR that users should know about needs 1 changeset file.
 
-1. ติดตั้ง Changesets ครั้งแรกบนเครื่องด้วย [Bun](https://bun.sh):
+1. The first time on your machine, install Changesets with [Bun](https://bun.sh):
 
    ```sh
    bun install
    ```
 
-2. สร้าง changeset แล้วเลือกระดับของการเปลี่ยนแปลง:
+2. Create a changeset and pick the level of the change:
 
    ```sh
    bun changeset
    ```
 
-3. เขียนสรุปสำหรับผู้ใช้ ข้อความนี้จะอยู่ใน `CHANGELOG.md` และ release notes ตามที่เขียน
-4. Commit ไฟล์ใหม่ใน `.changeset/` ไปพร้อมกับโค้ด
+3. Write a summary for users. This text goes into `CHANGELOG.md` and the release notes exactly as you write it.
+4. Commit the new file in `.changeset/` along with your code.
 
-เลือกระดับตามตารางนี้:
+Pick the level from this table:
 
-| ระดับ | ใช้เมื่อ | ก่อน 1.0.0 |
+| Level | Use it when | Before 1.0.0 |
 | --- | --- | --- |
-| `patch` | แก้ bug หรือข้อความ โดยไม่เพิ่มความสามารถ | 0.1.0 เป็น 0.1.1 |
-| `minor` | เพิ่มคำสั่ง, flag หรือ check ใหม่ | 0.1.0 เป็น 0.2.0 |
-| `major` | ลบหรือเปลี่ยนคำสั่ง, flag หรือ field ใน JSON ที่คนอื่นใช้อยู่ | 0.1.0 เป็น 1.0.0 |
+| `patch` | You fix a bug or text without adding features | 0.1.0 to 0.1.1 |
+| `minor` | You add a command, flag or check | 0.1.0 to 0.2.0 |
+| `major` | You remove or change a command, flag or JSON field that others use | 0.1.0 to 1.0.0 |
 
-PR ที่ผู้ใช้ไม่เห็นผล เช่นแก้ test หรือ CI ไม่ต้องมี changeset
+PRs that users don't see, such as test or CI changes, don't need a changeset.
 
-## ออก release
+## Cut a release
 
-1. Merge PR ที่มี changeset เข้า `main`
-2. Workflow เปิดหรืออัปเดต PR ชื่อ "chore: version packages" ซึ่ง bump version ใน `apps/cli/package.json` เขียน `apps/cli/CHANGELOG.md` และลบไฟล์ changeset ที่ใช้แล้ว
-3. ตรวจ `apps/cli/CHANGELOG.md` ใน PR นั้น ถ้าต้องการแก้ข้อความ ให้แก้ใน PR ได้เลย
-4. Merge PR "chore: version packages" เมื่อพร้อมออก release
+1. Merge PRs with changesets into `main`.
+2. The workflow opens or updates a PR titled "chore: version packages", which bumps the version in `apps/cli/package.json`, writes `apps/cli/CHANGELOG.md` and deletes the used changeset files.
+3. Check `apps/cli/CHANGELOG.md` in that PR. If you want to change the text, edit it in the PR.
+4. Merge the "chore: version packages" PR when you're ready to release.
 
-PR "chore: version packages" รวม changeset ทุกไฟล์ที่ merge เข้ามาจนถึงตอนนั้น ถ้ายังไม่อยากออก release ให้เปิด PR นั้นค้างไว้
+The "chore: version packages" PR collects every changeset merged up to that point. If you don't want to release yet, leave that PR open.
 
-หลัง merge workflow สร้าง tag `vx.y.z` จาก version ใน `apps/cli/package.json` แล้ว GoReleaser build binary สำหรับ Linux และ macOS ทั้ง `amd64` และ `arm64` สร้าง GitHub Release ที่ใช้ส่วนของ version นั้นใน `apps/cli/CHANGELOG.md` เป็น release notes และแนบไฟล์ `.tar.gz` กับ `checksums.txt`
+After the merge, the workflow creates the tag `vx.y.z` from the version in `apps/cli/package.json`. GoReleaser then builds binaries for Linux and macOS on both `amd64` and `arm64`, creates a GitHub Release that uses that version's section of `apps/cli/CHANGELOG.md` as the release notes, and attaches the `.tar.gz` files and `checksums.txt`.
 
-## สิ่งที่ release ใส่ใน binary
+## What a release puts in the binary
 
-GoReleaser ใส่ค่าเหล่านี้ตอน build ผ่าน `-ldflags`:
+GoReleaser sets these values at build time through `-ldflags`:
 
-- `main.version` เป็นชื่อ tag เช่น `v0.2.0` ซึ่ง `plumb version` แสดง
-- `main.updateURL` เป็น `https://api.github.com/repos/<owner>/<repo>/releases/latest` ของ repo ที่ build ทำให้ binary แจ้งเมื่อมี release ใหม่
+- `main.version` is the tag name, such as `v0.2.0`, which `plumb version` shows.
+- `main.updateURL` is `https://api.github.com/repos/<owner>/<repo>/releases/latest` for the repo that builds it, so the binary tells you when a new release is out.
 
-ถ้า build เองด้วย `make -C apps/cli dist` โดยไม่ตั้ง `UPDATE_URL` binary จะไม่เช็ก version ใหม่
+If you build with `make -C apps/cli dist` without setting `UPDATE_URL`, the binary doesn't check for new versions.
 
-## ตรวจ config ก่อน push
+## Check the config before you push
 
-ถ้าแก้ `.goreleaser.yaml` ให้ตรวจและลอง build บนเครื่องก่อน:
+If you change `.goreleaser.yaml`, check it and try a build on your machine first:
 
 ```sh
 goreleaser check
 goreleaser build --snapshot --clean --single-target
 ```
 
-ถ้าแก้ไฟล์ใน `.github/workflows/` ให้ตรวจด้วย `actionlint` ถ้าแก้ `.changeset/config.json` ให้ดูผลด้วย `bun changeset status`
+If you change files in `.github/workflows/`, check them with `actionlint`. If you change `.changeset/config.json`, see the result with `bun changeset status`.

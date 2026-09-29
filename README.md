@@ -65,7 +65,7 @@ To install plumb on a server, run `make -C apps/cli dist` and copy the static bi
 
 ## Documentation
 
-The guides in `docs/` are written in Thai:
+The guides are in `docs/`:
 
 | Guide | Read it when |
 | --- | --- |

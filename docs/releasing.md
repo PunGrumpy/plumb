@@ -38,11 +38,11 @@ PR ที่ผู้ใช้ไม่เห็นผล เช่นแก้ 
 ## ออก release
 
 1. Merge PR ที่มี changeset เข้า `main`
-2. Workflow เปิดหรืออัปเดต PR ชื่อ "Version Packages" ซึ่ง bump version ใน `apps/cli/package.json` เขียน `apps/cli/CHANGELOG.md` และลบไฟล์ changeset ที่ใช้แล้ว
+2. Workflow เปิดหรืออัปเดต PR ชื่อ "chore: version packages" ซึ่ง bump version ใน `apps/cli/package.json` เขียน `apps/cli/CHANGELOG.md` และลบไฟล์ changeset ที่ใช้แล้ว
 3. ตรวจ `apps/cli/CHANGELOG.md` ใน PR นั้น ถ้าต้องการแก้ข้อความ ให้แก้ใน PR ได้เลย
-4. Merge PR "Version Packages" เมื่อพร้อมออก release
+4. Merge PR "chore: version packages" เมื่อพร้อมออก release
 
-PR "Version Packages" รวม changeset ทุกไฟล์ที่ merge เข้ามาจนถึงตอนนั้น ถ้ายังไม่อยากออก release ให้เปิด PR นั้นค้างไว้
+PR "chore: version packages" รวม changeset ทุกไฟล์ที่ merge เข้ามาจนถึงตอนนั้น ถ้ายังไม่อยากออก release ให้เปิด PR นั้นค้างไว้
 
 หลัง merge workflow สร้าง tag `vx.y.z` จาก version ใน `apps/cli/package.json` แล้ว GoReleaser build binary สำหรับ Linux และ macOS ทั้ง `amd64` และ `arm64` สร้าง GitHub Release ที่ใช้ส่วนของ version นั้นใน `apps/cli/CHANGELOG.md` เป็น release notes และแนบไฟล์ `.tar.gz` กับ `checksums.txt`
 

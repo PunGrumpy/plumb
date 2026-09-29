@@ -22,12 +22,15 @@ jobs:
         with:
           go: "false"
 
-      # While .changeset/ holds changesets, keep the "Version Packages" PR up
-      # to date. Merging it bumps apps/cli/package.json and writes apps/cli/CHANGELOG.md.
+      # While .changeset/ holds changesets, keep the version PR up to date.
+      # Merging it bumps apps/cli/package.json and writes apps/cli/CHANGELOG.md.
       - uses: changesets/action@v1
         id: changesets
         with:
           version: bun run version
+          # Keep the PR title valid for lint-pr-title.yml.
+          title: "chore: version packages"
+          commit: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

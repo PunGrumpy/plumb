@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 100" role="img" aria-label="plumb">
+  <title>plumb</title>
+  <g fill="#fff" transform="translate(-15.25 11) scale(0.875)">
+    <rect x="47.5" y="8" width="5" height="26"/>
+    <polygon points="22,40 78,40 50,88"/>
+  </g>
+  <g stroke="#fff" transform="translate(70 0)">
+    <g fill="none" stroke-width="7">
+      <path d="M3.5 40V88"/><circle cx="15" cy="55" r="11.5"/>
+      <path d="M42.5 18V70"/>
+      <path d="M58.5 40V55a11.5 11.5 0 0 0 23 0V40M81.5 55V70"/>
+      <path d="M97.5 40V70M97.5 51.5a9 9 0 0 1 18 0V70M115.5 51.5a9 9 0 0 1 18 0V70"/>
+      <path d="M149.5 18V70"/><circle cx="161" cy="55" r="11.5"/>
+    </g>
+  </g>
+</svg>

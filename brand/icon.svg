@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="plumb">
+  <title>plumb</title>
+  <rect width="512" height="512" rx="112" fill="#000"/>
+  <g fill="#fff" transform="translate(96 102.4) scale(3.2)">
+    <rect x="47.5" y="8" width="5" height="26"/>
+    <polygon points="22,40 78,40 50,88"/>
+  </g>
+</svg>

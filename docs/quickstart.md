@@ -1,34 +1,34 @@
 <!-- contentType: Tutorial · plan: docs/content-plan.md -->
 
-# รัน plumb ครั้งแรกกับ lab จำลอง
+# Run plumb for the first time
 
-ใน tutorial นี้เราจะ build plumb แล้วใช้ `plumb demo` ไล่ VM `web-01` ใน lab ที่ฝังอยู่ใน binary ตั้งแต่ Keystone ถึง vRouter agent จากนั้นเราจะเปิด scenario ที่ route หายไป 1 จุด แล้วดูว่า plumb ชี้จุดนั้นและบอกสิ่งที่ต้องตรวจต่ออย่างไร ทุกขั้นรันบนเครื่องของคุณโดยไม่ต้องมี cloud หรือ credential
+In this tutorial you build plumb, then use `plumb demo` to follow the VM `web-01` from Keystone to the vRouter agent in the lab that ships inside the binary. Then you open a scenario where one route is missing, and you see how plumb points to it and tells you what to check next. Every step runs on your machine. You don't need a cloud or credentials.
 
 ## Build plumb
 
-เราต้องใช้ Go 1.24 ขึ้นไป ที่ root ของ repo ให้ build binary:
+You need Go 1.24 or later. From the root of the repo, build the binary:
 
 ```sh
 make -C apps/cli build
 ```
 
-ตรวจว่า binary ทำงาน:
+Check that the binary works:
 
 ```sh
 ./apps/cli/bin/plumb version
 ```
 
-ผลลัพธ์คือ `plumb` ตามด้วย version เช่น `plumb dev`
+The output is `plumb` followed by the version, for example `plumb dev`.
 
-## รัน lab จำลอง
+## Run the built-in lab
 
-ตอนนี้ให้รัน demo:
+Now run the demo:
 
 ```sh
 ./apps/cli/bin/plumb demo
 ```
 
-บรรทัดแรกบอก scenario ที่กำลังรัน ตามด้วย tree ที่ขึ้นต้นด้วย `VM web-01` ส่วนท้ายของผลลัพธ์เป็นแบบนี้:
+The first line names the scenario that runs, followed by a tree that starts with `VM web-01`. The end of the output looks like this:
 
 ```text
 Steps
@@ -42,11 +42,11 @@ Steps
 ✓ Traced web-01 through 6 of 6 stages in 0 ms
 ```
 
-เราส่งชื่อ `web-01` ให้ plumb ไม่ใช่ UUID stage `nova` จึงค้น UUID ให้ก่อน ถ้า terminal ของคุณแสดงสีได้ เครื่องหมาย `✓` จะเป็นสีเขียว
+You gave plumb the name `web-01`, not a UUID, so the `nova` stage looks up the UUID first. If your terminal shows color, the `✓` marks are green.
 
-## หา port ของ VM ใน tree
+## Find the VM's port in the tree
 
-ตอนนี้ให้เลื่อนขึ้นไปที่บรรทัด `Port` ซึ่งเป็นส่วนสุดท้ายของ tree ตัวอย่างนี้ตัดบรรทัดยาวด้วย `…`:
+Now scroll up to the `Port` line, which is the last part of the tree. This example cuts long lines at `…`:
 
 ```text
 └─ Port      9c1e4d2b-7a3f-…  fa:16:3e:5a:12:7c  10.0.1.5
@@ -56,23 +56,23 @@ Steps
    └─ vRouter   tap9c1e4d2b-7a ✓ active  vrf vn1:vn1 (index 3)  label 25
 ```
 
-ใต้ port มีชั้นละ 1 บรรทัด เรียงจาก Neutron ลงไปถึง vRouter agent ให้หาเครื่องหมาย `✓` ใน 3 บรรทัดนี้:
+Under the port there is one line per layer, from Neutron down to the vRouter agent. Find the `✓` mark in these 3 lines:
 
-1. บรรทัด `Config`: `✓ same UUID as the port`
-2. บรรทัด `Control` ของ `control-01` และ `control-02`: `10.0.1.5/32 ✓`
-3. บรรทัด `vRouter`: `✓ active`
+1. The `Config` line: `✓ same UUID as the port`
+2. The `Control` lines for `control-01` and `control-02`: `10.0.1.5/32 ✓`
+3. The `vRouter` line: `✓ active`
 
-หน้า [request ของ VM ผ่านชั้นไหนบ้าง](concepts.md) อธิบายว่าแต่ละบรรทัดเชื่อมกับบรรทัดถัดไปด้วยค่าอะไร
+[How a VM's request crosses each layer](concepts.md) explains which value links each line to the next.
 
-## รันแบบ DevStack
+## Run it as DevStack
 
-DevStack ใช้ OVN จึงไม่มี Config API ของ OpenSDN ให้เรียก scenario `devstack` รัน lab เดิมโดยไม่มี Config API:
+DevStack uses OVN, so it has no OpenSDN Config API to call. The `devstack` scenario runs the same lab without the Config API:
 
 ```sh
 ./apps/cli/bin/plumb demo devstack
 ```
 
-ส่วนท้ายเปลี่ยนเป็นแบบนี้:
+The end of the output changes to this:
 
 ```text
   - opensdn-config   skipped: ports use vif_type ovs, so this cloud does …
@@ -83,17 +83,17 @@ DevStack ใช้ OVN จึงไม่มี Config API ของ OpenSDN ใ
   Skipped opensdn-config: ports use vif_type ovs, so this cloud does not …
 ```
 
-port ใน scenario นี้มี `vif_type` เป็น `ovs` plumb จึงบอกว่า cloud นี้ไม่ได้ใช้ OpenSDN แล้วข้าม stage ของ OpenSDN ทั้ง 3 ส่วน 3 stage แรกยังทำงานครบ
+The port in this scenario has `vif_type` set to `ovs`, so plumb says this cloud doesn't use OpenSDN and skips all 3 OpenSDN stages. The first 3 stages still run in full.
 
-## ทำให้ route หายจาก control node 1 ตัว
+## Remove a route from one control node
 
-ต่อไปเราจะเปิด scenario ที่ `control-02` ไม่มี route ของ VM:
+Next you open a scenario where `control-02` has no route for the VM:
 
 ```sh
 ./apps/cli/bin/plumb demo missing-route
 ```
 
-บรรทัด `Control` ของ `control-02` ใน tree กลายเป็น `10.0.1.5/32 ✗ missing` และผลลัพธ์จบด้วย 3 บรรทัดนี้:
+The `Control` line for `control-02` in the tree changes to `10.0.1.5/32 ✗ missing`, and the output ends with these 3 lines:
 
 ```text
 ! Traced web-01 through 6 of 6 stages in 0 ms, 1 issue
@@ -101,27 +101,27 @@ port ใน scenario นี้มี `vif_type` เป็น `ovs` plumb จึ�
   More  plumb explain route-missing
 ```
 
-บรรทัด `Hint` บอกสิ่งที่ต้องตรวจต่อ และบรรทัด `More` บอกคำสั่งที่อธิบายปัญหานี้ ให้รันคำสั่งนั้น:
+The `Hint` line tells you what to check next, and the `More` line gives the command that explains this problem. Run that command:
 
 ```sh
 ./apps/cli/bin/plumb explain route-missing
 ```
 
-plumb พิมพ์ความหมายของ `route-missing`, สิ่งที่ต้องตรวจ และหัวข้อใน [คำเตือนแต่ละข้อของ plumb หมายถึงอะไร](troubleshooting.md)
+plumb prints what `route-missing` means, what to check and the section in [What each warning means](troubleshooting.md).
 
-## ดู scenario อื่น
+## Look at the other scenarios
 
-ขั้นสุดท้าย ให้ดูรายการ scenario ทั้งหมด:
+As a last step, list all scenarios:
 
 ```sh
 ./apps/cli/bin/plumb demo --list
 ```
 
-แต่ละ scenario ทำให้ชั้นหนึ่งพัง ลองรัน `agent-down` แล้วสังเกตว่าเครื่องหมายหน้าบรรทัดสุดท้ายเปลี่ยนเป็น `✗` และคำสั่งจบด้วย exit code `1` เพราะ stage `vrouter` เรียก API ไม่สำเร็จ ส่วน `missing-route` จบด้วย exit code `0` เพราะ API ทุกตัวตอบปกติ มีเพียงข้อมูลที่ไม่ตรงกัน
+Each scenario breaks one layer. Run `agent-down` and see that the mark in front of the last line changes to `✗` and the command ends with exit code `1`, because the `vrouter` stage can't call its API. `missing-route` ends with exit code `0`, because every API answers normally and only the data doesn't match.
 
-## อ่านต่อ
+## Next steps
 
-ตอนนี้เรารัน plumb อ่าน tree และตามคำแนะนำจาก hint ได้แล้ว หน้าถัดไปขึ้นกับงานที่คุณจะทำ:
+You can now run plumb, read the tree and follow a hint. The next page depends on what you want to do:
 
-- [วิธีใช้ plumb กับ DevStack และ lab OpenSDN](run-against-a-lab.md)
-- [คำเตือนแต่ละข้อของ plumb หมายถึงอะไร](troubleshooting.md)
+- [Use plumb with DevStack and OpenSDN](run-against-a-lab.md)
+- [What each warning means](troubleshooting.md)

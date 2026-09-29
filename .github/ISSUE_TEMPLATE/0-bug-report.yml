@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a trace, check or command that gives the wrong result
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening a new issue, please [search](https://github.com/PunGrumpy/plumb/issues) the existing issues and :+1: the one that matches instead.
+
+        If a trace ends with a code such as `route-missing`, run `plumb explain <code>` and read [troubleshooting](https://github.com/PunGrumpy/plumb/blob/main/docs/troubleshooting.md) first.
+
+  - type: checkboxes
+    attributes:
+      label: Verify latest release
+      description: Some issues are already fixed. Install the [latest release](https://github.com/PunGrumpy/plumb/releases/latest) and check that the issue still happens.
+      options:
+        - label: I verified that the issue exists in the latest plumb release.
+          required: true
+
+  - type: input
+    attributes:
+      label: plumb version
+      description: The output of `plumb version`.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Environment information
+      render: block
+      description: |
+        Run `plumb doctor` and paste its output here, then add the OpenStack and OpenSDN releases of the cloud. Please remove host names and addresses you don't want to share.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Command
+      render: sh
+      description: The exact command you ran, with any secrets removed.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Actual behavior
+      description: The output you got. Run the command again with `--debug` if the HTTP calls help explain it.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: |
+        Anything else that helps. If you can, attach the directory from `--record DIR` as a `.zip`. It lets us replay your trace with `--replay DIR`, and it doesn't contain your password.

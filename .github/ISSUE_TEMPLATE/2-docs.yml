@@ -1,0 +1,26 @@
+name: "Documentation update or improvement"
+description: A request to update or improve documentation
+title: "Docs: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for helping us improve the docs! If you can fix it yourself, a pull request is welcome too.
+  - type: textarea
+    attributes:
+      label: What is the improvement or update you wish to see?
+      description: "Example: The quickstart doesn't say which role `plumb doctor` needs."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Is there any context that might help us understand?
+      description: A clear description of any added context that might help us understand.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Does the docs page already exist? Please link to it.
+      description: "Example: https://github.com/PunGrumpy/plumb/blob/main/docs/quickstart.md"
+    validations:
+      required: false

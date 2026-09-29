@@ -1,91 +1,91 @@
 <!-- contentType: Conceptual · plan: docs/content-plan.md -->
 
-# plumb ออกแบบอย่างไร และต่อยอดได้ตรงไหน
+# How plumb is built
 
-หน้านี้อธิบายโครงสร้าง package ของ plumb, การตัดสินใจ 7 ข้อที่กำหนดรูปของโค้ด และเหตุผลของแต่ละข้อ ขั้นตอนเพิ่ม stage อยู่ใน [วิธีเพิ่ม stage ใหม่ให้ plumb](add-a-stage.md)
+This page explains plumb's package layout, the 7 decisions that shape the code and the reason for each. The steps to add a stage are in [Add a stage](add-a-stage.md).
 
-## โครงสร้าง package
+## Package layout
 
-โค้ด Go อยู่ใน `apps/cli/` ซึ่งเป็น module `github.com/PunGrumpy/plumb/apps/cli` โค้ดแบ่งเป็น 4 กลุ่ม คือ client ของแต่ละ API, stage ที่ร้อยข้อมูลเข้าด้วยกัน, ส่วนแสดงผล และคำสั่งที่ช่วยผู้ใช้เริ่มต้น:
+The Go code is in `apps/cli/`, which is the module `github.com/PunGrumpy/plumb/apps/cli`. The code falls into 4 groups: a client for each API, the stages that link the data together, the output, and the commands that help users get started:
 
 ```text
 apps/cli/
-  cmd/plumb/              คำสั่ง, flag, transport และ exit code
+  cmd/plumb/              commands, flags, transport and exit codes
   internal/httpx/         HTTP client, --debug, --record, --replay
-  internal/keystone/      token และ service catalog
-  internal/nova/          server และ os-interface
-  internal/glance/        ชื่อ image
+  internal/keystone/      token and service catalog
+  internal/nova/          server and os-interface
+  internal/glance/        image names
   internal/neutron/       port, network, subnet, security group, FIP
   internal/opensdn/
     config/               Config API (8082)
-    sandesh/              parser ของ introspect แบบ generic
+    sandesh/              generic introspect parser
     control/              control node introspect (8083)
     agent/                vRouter agent introspect (8085)
-  internal/trace/         struct Trace, 6 stage และ issue code
-  internal/render/        tree, verdict และ JSON
-  internal/ui/            สี และ spinner
-  internal/demo/          lab ที่ฝังใน binary และ scenario
-  internal/doctor/        ตรวจการเข้าถึงทุกชั้น
+  internal/trace/         Trace struct, 6 stages and issue codes
+  internal/render/        tree, verdict and JSON
+  internal/ui/            colors and spinner
+  internal/demo/          lab built into the binary, and scenarios
+  internal/doctor/        checks access to every layer
 ```
 
-Client แต่ละตัวรู้จักเฉพาะ API ของตัวเอง และไม่ import กันเอง มีเพียง `apps/cli/internal/trace` ที่รู้ว่าค่าจากชั้นไหนต้องส่งต่อไปชั้นไหน
+Each client knows only its own API, and clients don't import each other. Only `apps/cli/internal/trace` knows which value from which layer goes to which layer.
 
-## การตัดสินใจ 7 ข้อและสิ่งที่ต้องยอมแลก
+## 7 decisions and their trade-offs
 
-ทั้ง 7 ข้อเลือกให้เห็นข้อมูลของแต่ละชั้นชัดที่สุด แม้โค้ดจะยาวขึ้น โปรเจกต์นี้มีไว้เรียนรู้ระบบ ความชัดเจนจึงสำคัญกว่าจำนวนบรรทัด
+All 7 decisions favor showing each layer's data as clearly as possible, even when the code gets longer. This project exists to learn the system, so clarity matters more than line count.
 
-### เขียน request เองด้วย `net/http` แทน gophercloud
+### Write requests with `net/http` instead of gophercloud
 
-plumb สร้าง request ทุกตัวด้วย standard library เป้าหมายของโปรเจกต์คือให้เห็น URL, header และ microversion ของแต่ละชั้น gophercloud ซ่อนทั้ง 3 อย่างไว้ใน library
+plumb builds every request with the standard library. The project's goal is to show the URL, headers and microversion at each layer. gophercloud hides all 3 inside the library.
 
-สิ่งที่ต้องยอมแลกคือโค้ดต้องทำงานที่ library เคยทำให้ เช่นเติม `/v3` ท้าย `OS_AUTH_URL` และเติม `/v2.0` ท้าย endpoint ของ Neutron งานแบบนี้มีไม่กี่จุด จึงคุ้มกับการได้เห็น request จริง
+The trade-off is that the code must do work the library used to do, such as adding `/v3` to the end of `OS_AUTH_URL` and `/v2.0` to the end of the Neutron endpoint. There are only a few such places, so it's worth it to see the real requests.
 
-### ทุก call ผ่าน `httpx.Client` จุดเดียว
+### Every call goes through one `httpx.Client`
 
-Client ทุกตัวเรียก HTTP ผ่าน `httpx.Client` เพราะเหตุนี้ 3 feature ต่อไปนี้จึงใช้ได้กับทุกชั้นโดยไม่ต้องแก้ client:
+Every client makes HTTP calls through `httpx.Client`. Because of this, the following 3 features work for every layer without changing any client:
 
-- `--debug` log ทุก call
-- `--record` เป็น `http.RoundTripper` ที่บันทึก response ลงไฟล์
-- `--replay` เป็น `http.RoundTripper` ที่ตอบจากไฟล์
+- `--debug` logs every call
+- `--record` is an `http.RoundTripper` that saves responses to files
+- `--replay` is an `http.RoundTripper` that answers from files
 
-ไฟล์บันทึกเป็น HTTP response แบบข้อความ คนเขียนหรือแก้ไฟล์ด้วยมือได้ และ `http.ReadResponse` อ่านไฟล์กลับได้ ผลที่ได้คือ lab ใน `apps/cli/internal/demo/lab` ใช้ได้ทั้งใน `plumb demo` และใน test โดยไม่ต้องมี mock server
+The recorded files are plain-text HTTP responses. You can write or edit them by hand, and `http.ReadResponse` can read them back. As a result, the lab in `apps/cli/internal/demo/lab` works both in `plumb demo` and in tests, without a mock server.
 
-### `Trace` เป็นข้อตกลงเดียวระหว่าง stage กับการแสดงผล
+### `Trace` is the only contract between stages and output
 
-Stage เขียนผลลง struct `Trace` ใน `apps/cli/internal/trace/model.go` และ renderer อ่านจาก struct นั้นเท่านั้น tree, `--json` และหน้าเว็บในอนาคตจึงแสดงข้อมูลชุดเดียวกัน
+Stages write results to the `Trace` struct in `apps/cli/internal/trace/model.go`, and renderers read only from that struct. So the tree, `--json` and a future web page all show the same data.
 
-`Trace` เก็บผลแยกตาม port เพราะ UUID ของ port เป็นค่าเดียวที่ใช้ได้ตั้งแต่ Nova ถึง vRouter agent VM ที่มี 2 port จึงมี `Port` 2 ตัว และแต่ละตัวเก็บผลของทุกชั้น
+`Trace` stores results per port, because the port UUID is the only value that works from Nova all the way to the vRouter agent. A VM with 2 ports has 2 `Port` entries, and each one holds the results for every layer.
 
-### Stage ที่มีปัญหาไม่หยุด stage ถัดไป
+### A stage with a problem doesn't stop the next stage
 
-แต่ละ stage จบด้วยสถานะ `ok`, `warn`, `fail` หรือ `skip` แล้ว stage ถัดไปทำงานต่อ ความหมายของแต่ละสถานะอยู่ใน [ตัวเลือกของ plumb](cli-reference.md)
+Each stage ends with the status `ok`, `warn`, `fail` or `skip`, and then the next stage runs. What each status means is in [CLI reference](cli-reference.md).
 
-ทางเลือกนี้ทำให้ผลลัพธ์บอกเสมอว่าข้อมูลไปถึงชั้นไหนและหยุดที่ชั้นไหน ซึ่งเป็นคำถามที่คนเปิด plumb ต้องการคำตอบ ถ้าหยุดที่ error แรก ผู้ใช้จะเห็นเฉพาะชั้นที่พังและไม่เห็นว่าชั้นอื่นยังปกติ
+This choice means the output always shows which layer the data reached and where it stopped, which is the question people open plumb to answer. If plumb stopped at the first error, you would see only the broken layer and not that the other layers are fine.
 
-Stage `neutron` ค้น port ด้วย `device_id` และไม่ใช้ผลของ Nova ถ้า stage `nova` fail stage ถัดไปจึงยังมี port ให้ใช้
+The `neutron` stage looks up ports by `device_id` and doesn't use Nova's result. So if the `nova` stage fails, the next stages still have ports to work with.
 
-### Parse Sandesh เป็น tree แทน struct
+### Parse Sandesh into a tree instead of structs
 
-Introspect ตอบเป็น XML ของ Sandesh และชื่อ field เปลี่ยนได้ตาม release package `sandesh` จึง parse XML เป็น tree ของ `Node` แล้ว client อ่าน field ตามชื่อด้วย `Str`, `Int` และ `Strings`
+Introspect responds with Sandesh XML, and field names can change between releases. So the `sandesh` package parses the XML into a tree of `Node`, and clients read fields by name with `Str`, `Int` and `Strings`.
 
-ถ้า release ของคุณไม่มี field ใด ค่าที่อ่านได้จะว่าง ไม่ใช่ error การแก้ชื่อ field ทำใน `apps/cli/internal/opensdn/control` หรือ `apps/cli/internal/opensdn/agent` โดยไม่แตะ parser ข้อเสียคือ compiler ไม่เตือนเมื่อชื่อ field ผิด test ของ lab จำลองจึงต้องครอบคลุมทุก field ที่ tree แสดง
+If your release doesn't have a field, the value comes back empty, not as an error. You fix field names in `apps/cli/internal/opensdn/control` or `apps/cli/internal/opensdn/agent` without touching the parser. The downside is that the compiler doesn't warn you when a field name is wrong, so the built-in lab's tests must cover every field the tree shows.
 
-### อ่านอย่างเดียว และไม่ส่ง token ไปที่ introspect
+### Read only, and never send the token to introspect
 
-plumb ส่ง `POST` ครั้งเดียวไปที่ Keystone เพื่อขอ token call อื่นเป็น `GET` ทั้งหมด plumb ส่ง token ไปที่ Nova, Glance, Neutron และ Config API เท่านั้น introspect ไม่มี auth และรับ request ผ่าน HTTP ที่ไม่เข้ารหัส การส่ง token ไปที่ introspect จึงเสี่ยงโดยไม่ได้ประโยชน์
+plumb sends one `POST` to Keystone to get a token. Every other call is a `GET`. plumb sends the token only to Nova, Glance, Neutron and the Config API. Introspect has no auth and accepts requests over unencrypted HTTP, so sending the token to introspect adds risk with no benefit.
 
-### ทุกปัญหามี code, hint และคำสั่งที่อธิบายต่อ
+### Every problem has a code, a hint and a command that explains it
 
-คำเตือนและ error ที่ plumb รู้สาเหตุมี code คงที่ เช่น `route-missing` แต่ละ code มีความหมายและสิ่งที่ต้องตรวจต่อใน `apps/cli/internal/trace/issues.go` ข้อมูลชุดนั้นใช้ใน 4 ที่ คือ บรรทัด `Hint` ท้าย tree, คำสั่ง `plumb explain`, ฟิลด์ `code` และ `hint` ใน JSON และหัวข้อใน `docs/troubleshooting.md`
+Warnings and errors whose cause plumb knows have a fixed code, such as `route-missing`. Each code's meaning and what to check next are in `apps/cli/internal/trace/issues.go`. That data is used in 4 places: the `Hint` line at the end of the tree, the `plumb explain` command, the `code` and `hint` fields in JSON, and the sections in `docs/troubleshooting.md`.
 
-ผมเลือกทางนี้เพราะคนที่เปิด plumb ตอนระบบพังต้องการรู้ 2 อย่าง คืออะไรพังและต้องทำอะไรต่อ ข้อความ error ของ Go บอกได้เฉพาะอย่างแรก ราคาที่ต้องจ่ายคือ code ใหม่ทุกตัวต้องมีคำอธิบายและหัวข้อในเอกสาร test `TestEveryCodeIsDocumented` จึง fail ถ้าหัวข้อหายไป
+I chose this because people who open plumb when something is broken need to know 2 things: what broke and what to do next. A Go error message covers only the first. The cost is that every new code needs a description and a section in the docs, so the test `TestEveryCodeIsDocumented` fails if a section is missing.
 
-`plumb demo` ใช้แนวคิดเดียวกัน ผู้ใช้ครั้งแรกเห็นผลลัพธ์ที่ถูกต้องได้ก่อนมี credential และแต่ละ scenario แสดงหน้าตาของปัญหา 1 แบบ คนที่เคยเห็น `plumb demo missing-route` จะจำผลลัพธ์แบบเดียวกันได้เมื่อเจอบน cloud จริง
+`plumb demo` follows the same idea. First-time users can see correct output before they have credentials, and each scenario shows what 1 kind of problem looks like. If you've seen `plumb demo missing-route`, you'll recognize the same output when you hit it on a real cloud.
 
-## โปรเจกต์เสริมที่ใช้โค้ดชุดนี้ต่อได้
+## Side projects that can reuse this code
 
-โปรเจกต์เสริม 3 ตัวใช้ package ของ plumb ได้โดยตรง:
+3 side projects can use plumb's packages directly:
 
-- หน้าเว็บ object graph ของ OpenSDN อ่านผลของ `plumb --json` หรือเรียก `apps/cli/internal/opensdn/config` เอง `Ref` ทุกตัวมี `to` และ `uuid` ของปลายทาง จึงสร้าง edge ได้โดยไม่ต้อง `GET` เพิ่ม
-- ตัวตรวจ drift ระหว่าง Neutron กับ OpenSDN เพิ่ม method ที่ list object ใน client ของ `neutron` และ `config` แล้วเทียบ UUID ของ port กับ UUID ของ VMI
-- Control plane จำลองใช้ struct ใน `apps/cli/internal/trace/model.go` เป็นต้นแบบของ message ระหว่าง controller กับ agent จำลอง
+- An OpenSDN object graph web page reads the output of `plumb --json` or calls `apps/cli/internal/opensdn/config` itself. Every `Ref` has the target's `to` and `uuid`, so it can build edges without another `GET`.
+- A drift checker between Neutron and OpenSDN adds methods that list objects to the `neutron` and `config` clients, then compares port UUIDs with VMI UUIDs.
+- A simulated control plane uses the structs in `apps/cli/internal/trace/model.go` as a model for messages between the controller and a simulated agent.

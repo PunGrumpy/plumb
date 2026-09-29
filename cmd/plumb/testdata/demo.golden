@@ -1,0 +1,51 @@
+VM web-01 (3f2a8c1e-5b7d-4e2a-9c61-0d4b8e7f1a23)  ACTIVE
+├─ Keystone  user admin in project admin  admin
+│  ├─ endpoint  compute  http://demo.lab/compute/v2.1
+│  ├─ endpoint  network  http://demo.lab:9696/networking
+│  └─ endpoint  image    http://demo.lab/image
+├─ Nova      host compute-02  instance-0000001a
+│  ├─ flavor    m1.small  1 vCPU  2048 MB RAM  20 GB disk
+│  └─ image     ubuntu-22.04 (6b0e1f2a-3c4d-4e5f-8a9b-0c1d2e3f4a5b)
+├─ Compute   compute-02  10.10.0.21  (OpenSDN virtual-router)
+│  ├─ agent     http://10.10.0.21:8085
+│  ├─ XMPP      → 10.10.0.11  Established  config
+│  └─ XMPP      → 10.10.0.12  Established
+├─ Control   control-01  10.10.0.11  XMPP with compute: Established
+├─ Control   control-02  10.10.0.12  XMPP with compute: Established
+└─ Port      9c1e4d2b-7a3f-4b8e-a1d5-6e2f0c9b8a74  fa:16:3e:5a:12:7c  10.0.1.5
+   ├─ Neutron   ACTIVE  vif_type=vrouter  host=compute-02
+   │  ├─ network   vn1  vxlan 5  mtu 1500
+   │  │  └─ router    r1 (6a7b8c9d-0e1f-4a2b-9c3d-4e5f6a7b8c9d)
+   │  ├─ subnet    10.0.1.0/24  gw 10.0.1.1
+   │  ├─ secgroup  default  4 rules
+   │  │  ├─ rule      ingress IPv4 tcp 22 from 0.0.0.0/0
+   │  │  ├─ rule      ingress IPv4 any from group 4a5b6c7d-8e9f-4a0b-9c1d-2e3f4a5b6c7d
+   │  │  ├─ rule      egress IPv4 any to 0.0.0.0/0
+   │  │  └─ rule      egress IPv6 any to ::/0
+   │  └─ floating  203.0.113.10
+   ├─ Config    VMI default-domain:admin:9c1e4d2b-7a3f-4b8e-a1d5-6e2f0c9b8a74  ✓ same UUID as the port
+   │  ├─ VN        default-domain:admin:vn1  id 5  vxlan 5  mode l2_l3
+   │  ├─ RI        default-domain:admin:vn1:vn1
+   │  ├─ RT        target:64512:8000002  import+export
+   │  ├─ IIP       10.0.1.5
+   │  └─ FIP       203.0.113.10
+   ├─ Control   control-01  vn1:vn1.inet.0  10.0.1.5/32 ✓
+   │  └─ path      XMPP from compute-02  nh 10.10.0.21  label 25  encap gre,udp
+   ├─ Control   control-02  vn1:vn1.inet.0  10.0.1.5/32 ✓
+   │  └─ path      XMPP from compute-02  nh 10.10.0.21  label 25  encap gre,udp
+   └─ vRouter   tap9c1e4d2b-7a ✓ active  vrf vn1:vn1 (index 3)  label 25
+      ├─ route     10.0.1.5/32  local interface tap9c1e4d2b-7a  label 25
+      └─ flows     3 in the first page
+         ├─ flow      198.51.100.7:51234 → 10.0.1.5:22  tcp
+         ├─ flow      10.0.1.5:22 → 198.51.100.7:51234  tcp
+         └─ flow      10.0.1.5:40000 → 10.0.1.2:53  udp
+
+Steps
+  ✓ keystone
+  ✓ nova
+  ✓ neutron
+  ✓ opensdn-config
+  ✓ control
+  ✓ vrouter
+
+✓ Traced web-01 through 6 of 6 stages

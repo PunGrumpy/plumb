@@ -20,6 +20,8 @@
     "cli#fix": {
       "command": ["go", "fmt", "./..."],
       "cache": false
-    }
+    },
+    "//#check": {},
+    "//#fix": { "cache": false }
   }
 }

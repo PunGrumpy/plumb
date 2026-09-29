@@ -18,7 +18,7 @@ jobs:
           go-version-file: apps/cli/go.mod
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      # check: gofmt and go vet for every Go module.
+      # check: Ultracite for the repo, gofmt and go vet for every Go module.
       - run: bun turbo run check test build
       - name: Cross-compile every release platform
         run: make -C apps/cli dist

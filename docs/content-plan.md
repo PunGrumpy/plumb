@@ -31,6 +31,7 @@
 | [รันครั้งแรกกับ lab จำลอง](quickstart.md) | Tutorial | รัน plumb และอ่านผลลัพธ์ |
 | [ใช้กับ DevStack และ lab จริง](run-against-a-lab.md) | How-to | รันกับ cloud จริงและบันทึก lab |
 | [เพิ่ม stage ใหม่](add-a-stage.md) | How-to | เพิ่ม API ใหม่เข้า trace |
+| [ออก release](releasing.md) | How-to | ออก version ใหม่และ binary |
 | [ตัวเลือกของ plumb](cli-reference.md) | Reference | ค้น flag, variable และ exit code |
 | [ชั้นต่าง ๆ เชื่อมกันอย่างไร](concepts.md) | Conceptual | อธิบายแต่ละชั้นให้คนอื่นฟังได้ |
 | [การออกแบบ](architecture.md) | Conceptual | อธิบายเหตุผลของโครงสร้างโค้ด |

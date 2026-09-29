@@ -77,6 +77,7 @@ The guides in `docs/` are written in Thai:
 | [APIs plumb calls](docs/api-reference.md) | You compare endpoints and fields with your lab |
 | [How plumb is built](docs/architecture.md) | You change the code |
 | [Add a stage](docs/add-a-stage.md) | You add a new API to the trace |
+| [Release plumb](docs/releasing.md) | You cut a release |
 
 ## Before you use plumb on a real environment
 

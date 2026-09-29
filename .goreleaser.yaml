@@ -24,7 +24,6 @@ archives:
 checksum:
   name_template: checksums.txt
 
-# Changesets writes CHANGELOG.md; the workflow passes the version's section
-# as --release-notes.
-changelog:
-  disable: true
+# The release workflow passes the version's section of CHANGELOG.md, which
+# Changesets writes, as --release-notes. Keep the changelog pipe enabled:
+# disabling it also skips reading --release-notes.

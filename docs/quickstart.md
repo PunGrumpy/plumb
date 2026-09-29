@@ -53,6 +53,7 @@ Now scroll up to the `Port` line, which is the last part of the tree. This examp
    ├─ Neutron   ACTIVE  vif_type=vrouter  host=compute-02
    ├─ Config    VMI default-domain:admin:9c1e4d2b-…  ✓ same UUID as the port
    ├─ Control   control-01  vn1:vn1.inet.0  10.0.1.5/32 ✓
+   ├─ Control   control-02  vn1:vn1.inet.0  10.0.1.5/32 ✓
    └─ vRouter   tap9c1e4d2b-7a ✓ active  vrf vn1:vn1 (index 3)  label 25
 ```
 

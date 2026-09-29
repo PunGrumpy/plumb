@@ -2,29 +2,49 @@
 
 # วิธีออก release ของ plumb
 
-หน้านี้บอกขั้นตอนตั้งแต่เขียน commit จนได้ binary บน GitHub Release plumb ใช้ release-please จัดการ version และ `CHANGELOG.md` และใช้ GoReleaser build binary ทั้งสองทำงานใน `.github/workflows/release.yml`
+หน้านี้บอกขั้นตอนตั้งแต่บันทึกการเปลี่ยนแปลงจนได้ binary บน GitHub Release plumb ใช้ Changesets จัดการ version และ `CHANGELOG.md` และใช้ GoReleaser build binary ทั้งสองทำงานใน `.github/workflows/release.yml`
 
-## เขียน commit ตาม Conventional Commits
+Version ของ plumb อยู่ใน `package.json` ไฟล์นี้เป็น `private` และมีไว้ให้ Changesets ใช้เท่านั้น ตัว plumb ไม่ได้ใช้ Node
 
-release-please อ่าน type ของ commit ที่ merge เข้า `main` เพื่อเลือก version ถัดไป:
+## เพิ่ม changeset ใน PR
 
-| Commit | ผลกับ version ก่อน 1.0.0 | ผลกับ version ตั้งแต่ 1.0.0 |
+ทุก PR ที่ผู้ใช้ควรรู้ ต้องมี changeset 1 ไฟล์
+
+1. ติดตั้ง Changesets ครั้งแรกบนเครื่อง:
+
+   ```sh
+   npm install
+   ```
+
+2. สร้าง changeset แล้วเลือกระดับของการเปลี่ยนแปลง:
+
+   ```sh
+   npx changeset
+   ```
+
+3. เขียนสรุปสำหรับผู้ใช้ ข้อความนี้จะอยู่ใน `CHANGELOG.md` และ release notes ตามที่เขียน
+4. Commit ไฟล์ใหม่ใน `.changeset/` ไปพร้อมกับโค้ด
+
+เลือกระดับตามตารางนี้:
+
+| ระดับ | ใช้เมื่อ | ก่อน 1.0.0 |
 | --- | --- | --- |
-| `fix: …` | patch เช่น 0.1.0 เป็น 0.1.1 | patch |
-| `feat: …` | minor เช่น 0.1.0 เป็น 0.2.0 | minor |
-| `feat!: …` หรือมี `BREAKING CHANGE:` ใน body | minor | major |
-| `docs:`, `chore:`, `ci:`, `test:` | ไม่ออก release | ไม่ออก release |
+| `patch` | แก้ bug หรือข้อความ โดยไม่เพิ่มความสามารถ | 0.1.0 เป็น 0.1.1 |
+| `minor` | เพิ่มคำสั่ง, flag หรือ check ใหม่ | 0.1.0 เป็น 0.2.0 |
+| `major` | ลบหรือเปลี่ยนคำสั่ง, flag หรือ field ใน JSON ที่คนอื่นใช้อยู่ | 0.1.0 เป็น 1.0.0 |
 
-ใส่ scope ได้ เช่น `feat(path): …` scope ไม่มีผลกับ version
+PR ที่ผู้ใช้ไม่เห็นผล เช่นแก้ test หรือ CI ไม่ต้องมี changeset
 
 ## ออก release
 
-1. Merge PR เข้า `main` ตามปกติ
-2. release-please เปิดหรืออัปเดต PR ชื่อ `chore(main): release x.y.z` ซึ่งแก้ `CHANGELOG.md` และ `.release-please-manifest.json`
-3. ตรวจ changelog ใน PR นั้น ถ้าต้องการแก้ข้อความ ให้แก้ใน PR ได้เลย
-4. Merge PR ของ release
+1. Merge PR ที่มี changeset เข้า `main`
+2. Workflow เปิดหรืออัปเดต PR ชื่อ "Version Packages" ซึ่ง bump version ใน `package.json` เขียน `CHANGELOG.md` และลบไฟล์ changeset ที่ใช้แล้ว
+3. ตรวจ `CHANGELOG.md` ใน PR นั้น ถ้าต้องการแก้ข้อความ ให้แก้ใน PR ได้เลย
+4. Merge PR "Version Packages" เมื่อพร้อมออก release
 
-หลัง merge release-please สร้าง tag `vx.y.z` และ GitHub Release จากนั้น GoReleaser build binary สำหรับ Linux และ macOS ทั้ง `amd64` และ `arm64` แล้วแนบไฟล์ `.tar.gz` กับ `checksums.txt` เข้า release นั้น
+PR "Version Packages" รวม changeset ทุกไฟล์ที่ merge เข้ามาจนถึงตอนนั้น ถ้ายังไม่อยากออก release ให้เปิด PR นั้นค้างไว้
+
+หลัง merge workflow สร้าง tag `vx.y.z` จาก version ใน `package.json` แล้ว GoReleaser build binary สำหรับ Linux และ macOS ทั้ง `amd64` และ `arm64` สร้าง GitHub Release ที่ใช้ส่วนของ version นั้นใน `CHANGELOG.md` เป็น release notes และแนบไฟล์ `.tar.gz` กับ `checksums.txt`
 
 ## สิ่งที่ release ใส่ใน binary
 
@@ -44,4 +64,4 @@ goreleaser check
 goreleaser build --snapshot --clean --single-target
 ```
 
-ถ้าแก้ไฟล์ใน `.github/workflows/` ให้ตรวจด้วย `actionlint`
+ถ้าแก้ไฟล์ใน `.github/workflows/` ให้ตรวจด้วย `actionlint` ถ้าแก้ `.changeset/config.json` ให้ดูผลด้วย `npx changeset status`

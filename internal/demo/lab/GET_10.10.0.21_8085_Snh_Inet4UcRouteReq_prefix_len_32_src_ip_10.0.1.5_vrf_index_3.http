@@ -1,0 +1,33 @@
+HTTP/1.1 200 OK
+Content-Type: text/xml
+
+<?xml-stylesheet type="text/xsl" href="/universal_parse.xsl"?>
+<Inet4UcRouteResp type="sandesh">
+  <route_list type="list" identifier="1">
+    <list type="struct" size="1">
+      <RouteUcSandeshData>
+        <src_ip type="string">10.0.1.5</src_ip>
+        <src_plen type="byte">32</src_plen>
+        <src_vrf type="string">default-domain:admin:vn1:vn1</src_vrf>
+        <path_list type="list">
+          <list type="struct" size="1">
+          <PathSandeshData>
+          <nh type="struct">
+            <NhSandeshData>
+              <type type="string">interface</type>
+              <itf type="string">tap9c1e4d2b-7a</itf>
+              <valid type="bool">true</valid>
+              <policy type="string">enabled</policy>
+            </NhSandeshData>
+          </nh>
+            <label type="u32">25</label>
+            <peer type="string">LocalVmPort</peer>
+            <active_tunnel_type type="string">MPLSoUDP</active_tunnel_type>
+            <dest_vn_list type="list"><list type="string" size="1"><element>default-domain:admin:vn1</element></list></dest_vn_list>
+          </PathSandeshData>
+          </list>
+        </path_list>
+      </RouteUcSandeshData>
+    </list>
+  </route_list>
+</Inet4UcRouteResp>

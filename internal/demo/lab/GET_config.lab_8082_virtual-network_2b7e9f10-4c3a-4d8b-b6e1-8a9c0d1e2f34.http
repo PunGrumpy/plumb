@@ -1,0 +1,46 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "virtual-network": {
+    "uuid": "2b7e9f10-4c3a-4d8b-b6e1-8a9c0d1e2f34",
+    "fq_name": [
+      "default-domain",
+      "admin",
+      "vn1"
+    ],
+    "virtual_network_network_id": 5,
+    "virtual_network_properties": {
+      "vxlan_network_identifier": 5,
+      "forwarding_mode": "l2_l3"
+    },
+    "route_target_list": {
+      "route_target": []
+    },
+    "routing_instances": [
+      {
+        "to": [
+          "default-domain",
+          "admin",
+          "vn1",
+          "vn1"
+        ],
+        "uuid": "8d9e0f1a-2b3c-4d5e-8f6a-7b8c9d0e1f2a",
+        "href": "http://config.lab:8082/x/8d9e0f1a-2b3c-4d5e-8f6a-7b8c9d0e1f2a",
+        "attr": null
+      }
+    ],
+    "network_ipam_refs": [
+      {
+        "to": [
+          "default-domain",
+          "default-project",
+          "default-network-ipam"
+        ],
+        "uuid": "ipam-0001",
+        "href": "http://config.lab:8082/x/ipam-0001",
+        "attr": null
+      }
+    ]
+  }
+}

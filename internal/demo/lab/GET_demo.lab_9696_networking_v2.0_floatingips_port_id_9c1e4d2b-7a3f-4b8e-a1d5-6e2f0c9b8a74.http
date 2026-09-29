@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "floatingips": [
+    {
+      "id": "a0b1c2d3-e4f5-4a6b-8c7d-9e0f1a2b3c4d",
+      "floating_ip_address": "203.0.113.10",
+      "fixed_ip_address": "10.0.1.5",
+      "port_id": "9c1e4d2b-7a3f-4b8e-a1d5-6e2f0c9b8a74",
+      "status": "ACTIVE"
+    }
+  ]
+}

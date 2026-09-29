@@ -1,0 +1,4 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"ports": [{"id": "7d8e9f0a-1b2c-4d3e-8f4a-5b6c7d8e9f0a", "device_id": "a0b1c2d3-e4f5-4a6b-8c7d-9e0f1a2b3c4d", "device_owner": "network:floatingip", "status": "N/A", "fixed_ips": [{"ip_address": "203.0.113.10"}]}]}

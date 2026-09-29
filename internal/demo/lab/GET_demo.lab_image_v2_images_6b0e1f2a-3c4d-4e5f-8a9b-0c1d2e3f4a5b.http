@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "id": "6b0e1f2a-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+  "name": "ubuntu-22.04",
+  "status": "active",
+  "disk_format": "qcow2"
+}

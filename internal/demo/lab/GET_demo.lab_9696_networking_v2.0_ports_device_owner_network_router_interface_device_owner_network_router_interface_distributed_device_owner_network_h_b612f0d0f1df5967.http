@@ -1,0 +1,4 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"ports": [{"id": "5f6e7d8c-9b0a-4c1d-8e2f-3a4b5c6d7e8f", "network_id": "2b7e9f10-4c3a-4d8b-b6e1-8a9c0d1e2f34", "device_id": "6a7b8c9d-0e1f-4a2b-9c3d-4e5f6a7b8c9d", "device_owner": "network:router_interface", "status": "ACTIVE", "fixed_ips": [{"ip_address": "10.0.1.1"}]}]}

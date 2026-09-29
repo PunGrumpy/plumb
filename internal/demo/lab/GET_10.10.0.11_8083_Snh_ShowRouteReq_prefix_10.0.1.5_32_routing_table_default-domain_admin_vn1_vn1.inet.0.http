@@ -1,0 +1,35 @@
+HTTP/1.1 200 OK
+Content-Type: text/xml
+
+<?xml-stylesheet type="text/xsl" href="/universal_parse.xsl"?>
+<ShowRouteResp type="sandesh">
+  <tables type="list" identifier="1">
+    <list type="struct" size="1">
+      <ShowRouteTable>
+        <routing_instance type="string">default-domain:admin:vn1:vn1</routing_instance>
+        <routing_table_name type="string">default-domain:admin:vn1:vn1.inet.0</routing_table_name>
+        <routes type="list">
+          <list type="struct" size="1">
+            <ShowRoute>
+              <prefix type="string">10.0.1.5/32</prefix>
+              <paths type="list">
+                <list type="struct" size="1">
+                    <ShowRoutePath>
+                      <protocol type="string">XMPP</protocol>
+                      <source type="string">compute-02</source>
+                      <next_hop type="string">10.10.0.21</next_hop>
+                      <label type="u32">25</label>
+                      <tunnel_encap type="list"><list type="string" size="2"><element>gre</element><element>udp</element></list></tunnel_encap>
+                      <origin_vn type="string">default-domain:admin:vn1</origin_vn>
+                      <local_preference type="i32">200</local_preference>
+                      <communities type="list"><list type="string" size="0"></list></communities>
+                    </ShowRoutePath>
+                </list>
+              </paths>
+            </ShowRoute>
+          </list>
+        </routes>
+      </ShowRouteTable>
+    </list>
+  </tables>
+</ShowRouteResp>

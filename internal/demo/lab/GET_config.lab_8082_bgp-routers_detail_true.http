@@ -1,0 +1,58 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "bgp-routers": [
+    {
+      "bgp-router": {
+        "uuid": "bgp-control-01",
+        "fq_name": [
+          "default-domain",
+          "default-project",
+          "ip-fabric",
+          "__default__",
+          "control-01"
+        ],
+        "bgp_router_parameters": {
+          "address": "10.10.0.11",
+          "router_type": "control-node",
+          "autonomous_system": 64512
+        }
+      }
+    },
+    {
+      "bgp-router": {
+        "uuid": "bgp-control-02",
+        "fq_name": [
+          "default-domain",
+          "default-project",
+          "ip-fabric",
+          "__default__",
+          "control-02"
+        ],
+        "bgp_router_parameters": {
+          "address": "10.10.0.12",
+          "router_type": "control-node",
+          "autonomous_system": 64512
+        }
+      }
+    },
+    {
+      "bgp-router": {
+        "uuid": "bgp-mx-gw1",
+        "fq_name": [
+          "default-domain",
+          "default-project",
+          "ip-fabric",
+          "__default__",
+          "mx-gw1"
+        ],
+        "bgp_router_parameters": {
+          "address": "10.10.0.1",
+          "router_type": "router",
+          "autonomous_system": 65001
+        }
+      }
+    }
+  ]
+}

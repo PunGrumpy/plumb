@@ -1,0 +1,22 @@
+HTTP/1.1 200 OK
+Content-Type: text/xml
+
+<?xml-stylesheet type="text/xsl" href="/universal_parse.xsl"?>
+<AgentXmppConnectionStatus type="sandesh">
+  <peer type="list" identifier="1">
+    <list type="struct" size="2">
+      <AgentXmppData>
+        <controller_ip type="string">10.10.0.11</controller_ip>
+        <state type="string">Established</state>
+        <peer_name type="string">10.10.0.11</peer_name>
+        <cfg_controller type="string">Yes</cfg_controller>
+      </AgentXmppData>
+      <AgentXmppData>
+        <controller_ip type="string">10.10.0.12</controller_ip>
+        <state type="string">Established</state>
+        <peer_name type="string">10.10.0.12</peer_name>
+        <cfg_controller type="string">No</cfg_controller>
+      </AgentXmppData>
+    </list>
+  </peer>
+</AgentXmppConnectionStatus>

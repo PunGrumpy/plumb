@@ -1,0 +1,34 @@
+HTTP/1.1 200 OK
+Content-Type: text/xml
+
+<?xml-stylesheet type="text/xsl" href="/universal_parse.xsl"?>
+<ShowBgpNeighborSummaryResp type="sandesh">
+  <neighbors type="list" identifier="1">
+    <list type="struct" size="4">
+      <BgpNeighborResp>
+        <peer type="string">control-02</peer>
+        <peer_address type="string">10.10.0.12</peer_address>
+        <encoding type="string">BGP</encoding>
+        <state type="string">Established</state>
+      </BgpNeighborResp>
+      <BgpNeighborResp>
+        <peer type="string">mx-gw1</peer>
+        <peer_address type="string">10.10.0.1</peer_address>
+        <encoding type="string">BGP</encoding>
+        <state type="string">Established</state>
+      </BgpNeighborResp>
+      <BgpNeighborResp>
+        <peer type="string">compute-01</peer>
+        <peer_address type="string">10.10.0.20</peer_address>
+        <encoding type="string">XMPP</encoding>
+        <state type="string">Established</state>
+      </BgpNeighborResp>
+      <BgpNeighborResp>
+        <peer type="string">compute-02</peer>
+        <peer_address type="string">10.10.0.21</peer_address>
+        <encoding type="string">XMPP</encoding>
+        <state type="string">Established</state>
+      </BgpNeighborResp>
+    </list>
+  </neighbors>
+</ShowBgpNeighborSummaryResp>

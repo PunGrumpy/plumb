@@ -1,0 +1,46 @@
+HTTP/1.1 200 OK
+Content-Type: text/xml
+
+<?xml-stylesheet type="text/xsl" href="/universal_parse.xsl"?>
+<FlowRecordsResp type="sandesh">
+  <flow_list type="list" identifier="1">
+    <list type="struct" size="4">
+      <SandeshFlowData>
+        <sip type="string">198.51.100.7</sip>
+        <dip type="string">10.0.1.5</dip>
+        <src_port type="i32">51234</src_port>
+        <dst_port type="i32">22</dst_port>
+        <protocol type="byte">6</protocol>
+        <vrf type="u32">3</vrf>
+        <drop_reason type="string"></drop_reason>
+      </SandeshFlowData>
+      <SandeshFlowData>
+        <sip type="string">10.0.1.5</sip>
+        <dip type="string">198.51.100.7</dip>
+        <src_port type="i32">22</src_port>
+        <dst_port type="i32">51234</dst_port>
+        <protocol type="byte">6</protocol>
+        <vrf type="u32">3</vrf>
+        <drop_reason type="string"></drop_reason>
+      </SandeshFlowData>
+      <SandeshFlowData>
+        <sip type="string">10.0.1.5</sip>
+        <dip type="string">10.0.1.2</dip>
+        <src_port type="i32">40000</src_port>
+        <dst_port type="i32">53</dst_port>
+        <protocol type="byte">17</protocol>
+        <vrf type="u32">3</vrf>
+        <drop_reason type="string"></drop_reason>
+      </SandeshFlowData>
+      <SandeshFlowData>
+        <sip type="string">10.0.2.8</sip>
+        <dip type="string">10.0.2.9</dip>
+        <src_port type="i32">1234</src_port>
+        <dst_port type="i32">80</dst_port>
+        <protocol type="byte">6</protocol>
+        <vrf type="u32">3</vrf>
+        <drop_reason type="string"></drop_reason>
+      </SandeshFlowData>
+    </list>
+  </flow_list>
+</FlowRecordsResp>

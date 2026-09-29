@@ -1,0 +1,94 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "virtual-machine-interface": {
+    "uuid": "9c1e4d2b-7a3f-4b8e-a1d5-6e2f0c9b8a74",
+    "fq_name": [
+      "default-domain",
+      "admin",
+      "9c1e4d2b-7a3f-4b8e-a1d5-6e2f0c9b8a74"
+    ],
+    "parent_type": "project",
+    "virtual_machine_interface_mac_addresses": {
+      "mac_address": [
+        "fa:16:3e:5a:12:7c"
+      ]
+    },
+    "virtual_network_refs": [
+      {
+        "to": [
+          "default-domain",
+          "admin",
+          "vn1"
+        ],
+        "uuid": "2b7e9f10-4c3a-4d8b-b6e1-8a9c0d1e2f34",
+        "href": "http://config.lab:8082/x/2b7e9f10-4c3a-4d8b-b6e1-8a9c0d1e2f34",
+        "attr": null
+      }
+    ],
+    "routing_instance_refs": [
+      {
+        "to": [
+          "default-domain",
+          "admin",
+          "vn1",
+          "vn1"
+        ],
+        "uuid": "8d9e0f1a-2b3c-4d5e-8f6a-7b8c9d0e1f2a",
+        "href": "http://config.lab:8082/x/8d9e0f1a-2b3c-4d5e-8f6a-7b8c9d0e1f2a",
+        "attr": {
+          "direction": "both",
+          "protocol": null,
+          "ipv6_service_chain_address": null
+        }
+      }
+    ],
+    "security_group_refs": [
+      {
+        "to": [
+          "default-domain",
+          "admin",
+          "default"
+        ],
+        "uuid": "4a5b6c7d-8e9f-4a0b-9c1d-2e3f4a5b6c7d",
+        "href": "http://config.lab:8082/x/4a5b6c7d-8e9f-4a0b-9c1d-2e3f4a5b6c7d",
+        "attr": null
+      }
+    ],
+    "virtual_machine_refs": [
+      {
+        "to": [
+          "3f2a8c1e-5b7d-4e2a-9c61-0d4b8e7f1a23"
+        ],
+        "uuid": "3f2a8c1e-5b7d-4e2a-9c61-0d4b8e7f1a23",
+        "href": "http://config.lab:8082/x/3f2a8c1e-5b7d-4e2a-9c61-0d4b8e7f1a23",
+        "attr": null
+      }
+    ],
+    "instance_ip_back_refs": [
+      {
+        "to": [
+          "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f"
+        ],
+        "uuid": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
+        "href": "http://config.lab:8082/x/c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
+        "attr": null
+      }
+    ],
+    "floating_ip_back_refs": [
+      {
+        "to": [
+          "default-domain",
+          "admin",
+          "public",
+          "fip-pool",
+          "f1e2d3c4-b5a6-4978-8695-a4b3c2d1e0f9"
+        ],
+        "uuid": "f1e2d3c4-b5a6-4978-8695-a4b3c2d1e0f9",
+        "href": "http://config.lab:8082/x/f1e2d3c4-b5a6-4978-8695-a4b3c2d1e0f9",
+        "attr": null
+      }
+    ]
+  }
+}

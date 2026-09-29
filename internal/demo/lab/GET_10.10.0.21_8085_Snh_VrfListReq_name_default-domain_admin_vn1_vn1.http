@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+Content-Type: text/xml
+
+<?xml-stylesheet type="text/xsl" href="/universal_parse.xsl"?>
+<VrfListResp type="sandesh">
+  <vrf_list type="list" identifier="1">
+    <list type="struct" size="1">
+      <VrfSandeshData>
+        <name type="string">default-domain:admin:vn1:vn1</name>
+        <ucindex type="u32">3</ucindex>
+        <mcindex type="u32">3</mcindex>
+        <vxlan_id type="u32">5</vxlan_id>
+        <vn type="string">default-domain:admin:vn1</vn>
+      </VrfSandeshData>
+    </list>
+  </vrf_list>
+</VrfListResp>

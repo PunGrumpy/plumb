@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "floating-ip": {
+    "uuid": "f1e2d3c4-b5a6-4978-8695-a4b3c2d1e0f9",
+    "fq_name": [
+      "default-domain",
+      "admin",
+      "public",
+      "fip-pool",
+      "f1e2d3c4-b5a6-4978-8695-a4b3c2d1e0f9"
+    ],
+    "floating_ip_address": "203.0.113.10"
+  }
+}

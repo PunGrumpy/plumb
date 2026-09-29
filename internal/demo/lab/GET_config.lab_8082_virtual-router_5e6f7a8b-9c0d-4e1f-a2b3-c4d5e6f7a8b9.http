@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "virtual-router": {
+    "uuid": "5e6f7a8b-9c0d-4e1f-a2b3-c4d5e6f7a8b9",
+    "fq_name": [
+      "default-global-system-config",
+      "compute-02"
+    ],
+    "virtual_router_ip_address": "10.10.0.21"
+  }
+}

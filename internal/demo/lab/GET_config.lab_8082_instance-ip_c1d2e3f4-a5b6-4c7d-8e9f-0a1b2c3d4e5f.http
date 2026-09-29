@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "instance-ip": {
+    "uuid": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
+    "fq_name": [
+      "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f"
+    ],
+    "instance_ip_address": "10.0.1.5"
+  }
+}

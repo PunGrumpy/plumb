@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "network": {
+    "id": "2b7e9f10-4c3a-4d8b-b6e1-8a9c0d1e2f34",
+    "name": "vn1",
+    "status": "ACTIVE",
+    "mtu": 1500,
+    "provider:network_type": "vxlan",
+    "provider:segmentation_id": 5,
+    "router:external": false,
+    "subnets": [
+      "7e3a1b2c-9d4f-4e5a-8b6c-1d2e3f4a5b6c"
+    ]
+  }
+}

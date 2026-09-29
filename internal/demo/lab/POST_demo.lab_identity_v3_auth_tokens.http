@@ -1,0 +1,92 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+X-Subject-Token: recorded-token
+
+{
+  "token": {
+    "expires_at": "2026-09-28T12:00:00.000000Z",
+    "methods": [
+      "password"
+    ],
+    "user": {
+      "id": "e1f2a3b4c5d64e7f8091a2b3c4d5e6f7",
+      "name": "admin",
+      "domain": {
+        "id": "default",
+        "name": "Default"
+      }
+    },
+    "project": {
+      "id": "0a1b2c3d4e5f40718293a4b5c6d7e8f9",
+      "name": "admin",
+      "domain": {
+        "id": "default",
+        "name": "Default"
+      }
+    },
+    "roles": [
+      {
+        "id": "r1",
+        "name": "admin"
+      },
+      {
+        "id": "r2",
+        "name": "member"
+      },
+      {
+        "id": "r3",
+        "name": "reader"
+      }
+    ],
+    "catalog": [
+      {
+        "type": "identity",
+        "name": "keystone",
+        "endpoints": [
+          {
+            "interface": "public",
+            "region": "RegionOne",
+            "region_id": "RegionOne",
+            "url": "http://demo.lab/identity"
+          }
+        ]
+      },
+      {
+        "type": "compute",
+        "name": "nova",
+        "endpoints": [
+          {
+            "interface": "public",
+            "region": "RegionOne",
+            "region_id": "RegionOne",
+            "url": "http://demo.lab/compute/v2.1"
+          }
+        ]
+      },
+      {
+        "type": "network",
+        "name": "neutron",
+        "endpoints": [
+          {
+            "interface": "public",
+            "region": "RegionOne",
+            "region_id": "RegionOne",
+            "url": "http://demo.lab:9696/networking"
+          }
+        ]
+      },
+      {
+        "type": "image",
+        "name": "glance",
+        "endpoints": [
+          {
+            "interface": "public",
+            "region": "RegionOne",
+            "region_id": "RegionOne",
+            "url": "http://demo.lab/image"
+          }
+        ]
+      }
+    ]
+  }
+}

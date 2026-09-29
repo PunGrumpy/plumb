@@ -1,0 +1,42 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "server": {
+    "id": "3f2a8c1e-5b7d-4e2a-9c61-0d4b8e7f1a23",
+    "name": "web-01",
+    "status": "ACTIVE",
+    "tenant_id": "0a1b2c3d4e5f40718293a4b5c6d7e8f9",
+    "OS-EXT-SRV-ATTR:host": "compute-02",
+    "OS-EXT-SRV-ATTR:hypervisor_hostname": "compute-02.lab",
+    "OS-EXT-SRV-ATTR:instance_name": "instance-0000001a",
+    "OS-EXT-STS:power_state": 1,
+    "OS-EXT-STS:task_state": null,
+    "flavor": {
+      "original_name": "m1.small",
+      "vcpus": 1,
+      "ram": 2048,
+      "disk": 20,
+      "ephemeral": 0,
+      "swap": 0,
+      "extra_specs": {}
+    },
+    "image": {
+      "id": "6b0e1f2a-3c4d-4e5f-8a9b-0c1d2e3f4a5b"
+    },
+    "addresses": {
+      "vn1": [
+        {
+          "addr": "10.0.1.5",
+          "version": 4,
+          "OS-EXT-IPS:type": "fixed"
+        },
+        {
+          "addr": "203.0.113.10",
+          "version": 4,
+          "OS-EXT-IPS:type": "floating"
+        }
+      ]
+    }
+  }
+}

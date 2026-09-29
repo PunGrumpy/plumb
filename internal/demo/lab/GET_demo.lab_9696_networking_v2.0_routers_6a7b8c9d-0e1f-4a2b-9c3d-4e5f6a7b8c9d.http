@@ -1,0 +1,4 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"router": {"id": "6a7b8c9d-0e1f-4a2b-9c3d-4e5f6a7b8c9d", "name": "r1", "status": "ACTIVE"}}

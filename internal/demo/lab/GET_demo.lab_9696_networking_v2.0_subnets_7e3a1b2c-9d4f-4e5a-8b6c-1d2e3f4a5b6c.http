@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "subnet": {
+    "id": "7e3a1b2c-9d4f-4e5a-8b6c-1d2e3f4a5b6c",
+    "name": "vn1-subnet",
+    "cidr": "10.0.1.0/24",
+    "gateway_ip": "10.0.1.1",
+    "ip_version": 4,
+    "enable_dhcp": true
+  }
+}

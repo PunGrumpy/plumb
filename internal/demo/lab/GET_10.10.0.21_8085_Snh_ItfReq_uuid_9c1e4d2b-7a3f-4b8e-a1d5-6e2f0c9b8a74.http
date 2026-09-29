@@ -1,0 +1,24 @@
+HTTP/1.1 200 OK
+Content-Type: text/xml
+
+<?xml-stylesheet type="text/xsl" href="/universal_parse.xsl"?>
+<ItfResp type="sandesh">
+  <itf_list type="list" identifier="1">
+    <list type="struct" size="1">
+      <ItfSandeshData>
+        <index type="u32">3</index>
+        <name type="string">tap9c1e4d2b-7a</name>
+        <uuid type="string">9c1e4d2b-7a3f-4b8e-a1d5-6e2f0c9b8a74</uuid>
+        <vrf_name type="string">default-domain:admin:vn1:vn1</vrf_name>
+        <active type="string">Active</active>
+        <ipv4_active type="string">Active</ipv4_active>
+        <ip_addr type="string">10.0.1.5</ip_addr>
+        <mac_addr type="string">fa:16:3e:5a:12:7c</mac_addr>
+        <label type="i32">25</label>
+        <vn_name type="string">default-domain:admin:vn1</vn_name>
+        <vm_uuid type="string">3f2a8c1e-5b7d-4e2a-9c61-0d4b8e7f1a23</vm_uuid>
+        <mdata_ip_addr type="string">169.254.0.3</mdata_ip_addr>
+      </ItfSandeshData>
+    </list>
+  </itf_list>
+</ItfResp>

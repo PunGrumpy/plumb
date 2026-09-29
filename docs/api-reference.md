@@ -15,8 +15,8 @@ Stage `keystone` ขอ token แบบผูก project และอ่าน e
 | Call | Field ที่อ่าน | ใช้ทำอะไร |
 | --- | --- | --- |
 | `POST /v3/auth/tokens` | header `X-Subject-Token` | token ของ call ถัดไป |
-| | `token.roles[].name` | ตรวจ role `admin` |
-| | `token.catalog[]` | endpoint ของ `compute`, `network` และ `image` |
+|  | `token.roles[].name` | ตรวจ role `admin` |
+|  | `token.catalog[]` | endpoint ของ `compute`, `network` และ `image` |
 
 ## Nova และ Glance
 
@@ -28,8 +28,8 @@ Stage `nova` อ่าน server ด้วย microversion 2.47 ซึ่งแ�
 | `GET /v2.0/ports?fixed_ips=ip_address={ip}` ของ Neutron | `device_id`, `device_owner` | VM ที่ใช้ fixed IP เมื่อผู้ใช้ส่ง IP |
 | `GET /v2.0/floatingips?floating_ip_address={ip}` แล้ว `GET /v2.0/ports/{port_id}` | `port_id`, `device_id` | VM ที่ใช้ floating IP เมื่อไม่เจอ fixed IP |
 | `GET /servers/{vm_id}` | `OS-EXT-SRV-ATTR:host` | host ของ VM ต้องใช้ role `admin` |
-| | `flavor.original_name`, `vcpus`, `ram`, `disk` | ขนาดของ VM |
-| | `image.id` | ค่าว่างเมื่อ boot จาก volume |
+|  | `flavor.original_name`, `vcpus`, `ram`, `disk` | ขนาดของ VM |
+|  | `image.id` | ค่าว่างเมื่อ boot จาก volume |
 | `GET /servers/{vm_id}/os-interface` | `port_id`, `mac_addr`, `fixed_ips` | port ที่ Nova attach |
 | `GET /v2/images/{image_id}` ของ Glance | `name` | ชื่อ image |
 
@@ -40,8 +40,8 @@ Stage `neutron` ค้น port ด้วย `device_id` แล้วอ่าน
 | Call | Field ที่อ่าน | ใช้ทำอะไร |
 | --- | --- | --- |
 | `GET /v2.0/ports?device_id={vm_id}` | `binding:vif_type` | backend ที่เสียบ port เข้า datapath |
-| | `binding:host_id` | เทียบกับ host ของ Nova |
-| | `fixed_ips`, `security_groups` | key ของ call ถัดไป |
+|  | `binding:host_id` | เทียบกับ host ของ Nova |
+|  | `fixed_ips`, `security_groups` | key ของ call ถัดไป |
 | `GET /v2.0/networks/{id}` | `provider:network_type`, `provider:segmentation_id` | ชนิดและเลข segment |
 | `GET /v2.0/subnets/{id}` | `cidr`, `gateway_ip` | แสดง subnet และ gateway |
 | `GET /v2.0/security-groups/{id}` | `security_group_rules[]` | แปลง rule เป็นข้อความ 1 บรรทัด |
@@ -56,11 +56,11 @@ Stage `opensdn-config` อ่าน object ด้วย `GET /{type}/{uuid}` ซ
 | Call | Field ที่อ่าน | ใช้ทำอะไร |
 | --- | --- | --- |
 | `GET /virtual-machine-interface/{port_id}` | `virtual_network_refs` | VN ของ port |
-| | `routing_instance_refs` | RI ของ port |
-| | `instance_ip_back_refs`, `floating_ip_back_refs` | IP ที่ config จองไว้ |
+|  | `routing_instance_refs` | RI ของ port |
+|  | `instance_ip_back_refs`, `floating_ip_back_refs` | IP ที่ config จองไว้ |
 | `GET /virtual-network/{uuid}` | `virtual_network_network_id` | ID ภายในของ VN |
-| | `virtual_network_properties` | VXLAN network identifier (VNI) และ forwarding mode |
-| | `route_target_list`, `routing_instances` | RT ที่ผู้ใช้กำหนดเอง และ RI สำรอง |
+|  | `virtual_network_properties` | VXLAN network identifier (VNI) และ forwarding mode |
+|  | `route_target_list`, `routing_instances` | RT ที่ผู้ใช้กำหนดเอง และ RI สำรอง |
 | `GET /routing-instance/{uuid}` | `route_target_refs[].to`, `attr.import_export` | RT และทิศทาง |
 | `GET /virtual-machine/{vm_id}` | `virtual_router_back_refs` | compute ที่ VM อยู่ |
 | `GET /virtual-router/{uuid}` | `virtual_router_ip_address` | IP ของ agent |

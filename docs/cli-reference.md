@@ -26,14 +26,14 @@
 
 `plumb demo --list` แสดงรายการนี้:
 
-| Scenario | ชั้นที่พัง | Exit code |
-| --- | --- | --- |
-| `healthy` | ไม่มี เป็นค่าเริ่มต้น | `0` |
-| `devstack` | ไม่มี Config API จึงข้าม 3 stage ของ OpenSDN | `0` |
-| `vmi-missing` | port ใน Neutron ไม่มี VMI ใน OpenSDN | `1` |
-| `missing-route` | `control-02` ไม่มี route ของ VM | `0` |
-| `label-mismatch` | agent ใช้ label ที่ control node ไม่ได้ประกาศ | `0` |
-| `agent-down` | introspect ของ agent ปฏิเสธการเชื่อมต่อ | `1` |
+| Scenario         | ชั้นที่พัง                                    | Exit code |
+| ---------------- | --------------------------------------------- | --------- |
+| `healthy`        | ไม่มี เป็นค่าเริ่มต้น                         | `0`       |
+| `devstack`       | ไม่มี Config API จึงข้าม 3 stage ของ OpenSDN  | `0`       |
+| `vmi-missing`    | port ใน Neutron ไม่มี VMI ใน OpenSDN          | `1`       |
+| `missing-route`  | `control-02` ไม่มี route ของ VM               | `0`       |
+| `label-mismatch` | agent ใช้ label ที่ control node ไม่ได้ประกาศ | `0`       |
+| `agent-down`     | introspect ของ agent ปฏิเสธการเชื่อมต่อ       | `1`       |
 
 ## Environment variable ของ OpenStack
 
@@ -42,7 +42,7 @@
 | Variable | ต้องมี | ค่าเริ่มต้นและหมายเหตุ |
 | --- | --- | --- |
 | `OS_AUTH_URL` | ใช่ | เติม `/v3` ท้าย URL ถ้าไม่มี |
-| `OS_USERNAME`, `OS_PASSWORD` | ใช่ ยกเว้นใช้ application credential | |
+| `OS_USERNAME`, `OS_PASSWORD` | ใช่ ยกเว้นใช้ application credential |  |
 | `OS_PROJECT_NAME` หรือ `OS_PROJECT_ID` | ใช่ ยกเว้นใช้ application credential | อ่าน `OS_TENANT_NAME` และ `OS_TENANT_ID` แทนได้ |
 | `OS_USER_DOMAIN_NAME` หรือ `OS_USER_DOMAIN_ID` | ไม่ | `Default` |
 | `OS_PROJECT_DOMAIN_NAME` หรือ `OS_PROJECT_DOMAIN_ID` | ไม่ | `Default` |
@@ -75,12 +75,12 @@ Security group เป็นแบบ stateful plumb จึงตรวจเฉ�
 
 ## Flag ของ `plumb link`
 
-| Flag | หน้าที่ |
-| --- | --- |
-| `--config-url` | URL ของ Config API ที่จะจำ |
+| Flag            | หน้าที่                                           |
+| --------------- | ------------------------------------------------- |
+| `--config-url`  | URL ของ Config API ที่จะจำ                        |
 | `--control-url` | URL ของ control introspect ที่จะจำ คั่นด้วย comma |
-| `--remove` | ลบ link ของ cloud นี้ |
-| `--force` | บันทึกแม้ Config API ไม่ตอบจากเครื่องนี้ |
+| `--remove`      | ลบ link ของ cloud นี้                             |
+| `--force`       | บันทึกแม้ Config API ไม่ตอบจากเครื่องนี้          |
 
 ก่อนบันทึก `plumb link` ส่ง `GET` ไปที่ `--config-url` ถ้าไม่มี HTTP response กลับมา คำสั่งจะจบด้วย exit code `1` และไม่บันทึก
 
@@ -110,12 +110,12 @@ URL ต้องตอบเป็น JSON แบบ GitHub releases API ที�
 
 ## Environment variable ของ terminal
 
-| Variable | ผล |
-| --- | --- |
-| `NO_COLOR` | ปิดสี |
+| Variable      | ผล                                             |
+| ------------- | ---------------------------------------------- |
+| `NO_COLOR`    | ปิดสี                                          |
 | `FORCE_COLOR` | เปิดสีแม้ stdout ไม่ใช่ terminal ยกเว้นค่า `0` |
-| `TERM=dumb` | ปิดสี |
-| `CI` | ปิด spinner |
+| `TERM=dumb`   | ปิดสี                                          |
+| `CI`          | ปิด spinner                                    |
 
 plumb แสดงสีเมื่อ stdout เป็น terminal และแสดง spinner บน stderr เมื่อ stderr เป็น terminal
 
@@ -128,12 +128,12 @@ plumb แสดงสีเมื่อ stdout เป็น terminal และ�
 | `--config-url` | ว่าง | `OPENSDN_CONFIG_URL` | URL ของ Config API ถ้าว่าง plumb ข้าม stage ของ OpenSDN ทั้ง 3 |
 | `--control-url` | ค้นจาก `bgp-router` | `OPENSDN_CONTROL_URLS` | URL ของ control introspect คั่นด้วย comma |
 | `--agent-url` | IP ของ `virtual-router` และ `--agent-port` | `OPENSDN_AGENT_URL` | URL ของ agent introspect ใช้เฉพาะ `plumb <vm>` |
-| `--control-port` | `8083` | | port ที่ใช้ตอนค้นหา control node เอง |
-| `--agent-port` | `8085` | | port ที่ใช้ตอนค้นหา agent เอง |
-| `--no-config-token` | ปิด | | ไม่ส่ง Keystone token ไปที่ Config API |
-| `--timeout` | `2m0s` | | เวลาสูงสุดของทั้งคำสั่ง |
-| `--request-timeout` | `15s` | | เวลาสูงสุดต่อ HTTP call |
-| `--insecure` | ปิด | | ไม่ตรวจ TLS certificate |
+| `--control-port` | `8083` |  | port ที่ใช้ตอนค้นหา control node เอง |
+| `--agent-port` | `8085` |  | port ที่ใช้ตอนค้นหา agent เอง |
+| `--no-config-token` | ปิด |  | ไม่ส่ง Keystone token ไปที่ Config API |
+| `--timeout` | `2m0s` |  | เวลาสูงสุดของทั้งคำสั่ง |
+| `--request-timeout` | `15s` |  | เวลาสูงสุดต่อ HTTP call |
+| `--insecure` | ปิด |  | ไม่ตรวจ TLS certificate |
 
 `plumb doctor` จำกัดเวลาของแต่ละ probe ไว้ที่ 3 วินาที และ probe compute ได้พร้อมกันครั้งละ 16 เครื่อง
 
@@ -152,9 +152,9 @@ plumb แสดงสีเมื่อ stdout เป็น terminal และ�
 
 `plumb <vm>` เท่านั้นที่รับ 2 flag นี้ และใช้พร้อมกันไม่ได้:
 
-| Flag | หน้าที่ |
-| --- | --- |
-| `--record DIR` | บันทึกทุก response ลง `DIR` |
+| Flag           | หน้าที่                                       |
+| -------------- | --------------------------------------------- |
+| `--record DIR` | บันทึกทุก response ลง `DIR`                   |
 | `--replay DIR` | ตอบทุก call จากไฟล์ใน `DIR` โดยไม่ต่อ network |
 
 ถ้าใช้ `--replay` โดยไม่ตั้ง `OS_USERNAME` plumb จะใช้ค่า `replay` แทน เพราะไฟล์บันทึกไม่ขึ้นกับ request body
@@ -174,22 +174,22 @@ Content-Type: application/json
 
 ## Exit code
 
-| Exit code | ความหมาย |
-| --- | --- |
-| `0` | ไม่มี stage หรือ check ที่ fail อาจมีคำเตือน |
-| `1` | มีอย่างน้อย 1 stage หรือ check ที่ fail |
-| `2` | คำสั่ง, argument หรือ flag ไม่ถูกต้อง หรือไม่มี credential |
+| Exit code | ความหมาย                                                   |
+| --------- | ---------------------------------------------------------- |
+| `0`       | ไม่มี stage หรือ check ที่ fail อาจมีคำเตือน               |
+| `1`       | มีอย่างน้อย 1 stage หรือ check ที่ fail                    |
+| `2`       | คำสั่ง, argument หรือ flag ไม่ถูกต้อง หรือไม่มี credential |
 
 ## สถานะของ stage
 
 หัวข้อ `Steps` แสดงสถานะของแต่ละ stage ด้วยเครื่องหมาย 4 แบบ:
 
-| เครื่องหมาย | สถานะใน JSON | ความหมาย |
-| --- | --- | --- |
-| `✓` | `ok` | API ตอบครบ และข้อมูลระหว่างชั้นตรงกัน |
-| `!` | `warn` | API ตอบ แต่ข้อมูลระหว่างชั้นไม่ตรงกัน |
-| `✗` | `fail` | call หลักของ stage ไม่สำเร็จ |
-| `-` | `skip` | ขาดข้อมูลที่ stage ก่อนหน้าต้องหาให้ |
+| เครื่องหมาย | สถานะใน JSON | ความหมาย                              |
+| ----------- | ------------ | ------------------------------------- |
+| `✓`         | `ok`         | API ตอบครบ และข้อมูลระหว่างชั้นตรงกัน |
+| `!`         | `warn`       | API ตอบ แต่ข้อมูลระหว่างชั้นไม่ตรงกัน |
+| `✗`         | `fail`       | call หลักของ stage ไม่สำเร็จ          |
+| `-`         | `skip`       | ขาดข้อมูลที่ stage ก่อนหน้าต้องหาให้  |
 
 ## JSON ของ trace
 

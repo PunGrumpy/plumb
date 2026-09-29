@@ -184,4 +184,3 @@ VRF ของ VM ต้นทางบน compute ของมันไม่ม
 ### `path-wrong-next-hop`
 
 VRF ต้นทางมี route แต่ route นั้นไม่ได้ไปที่ compute หรือ interface ที่ VM ปลายทางอยู่ สาเหตุหนึ่งคือ control node ยังเก็บ route เก่าหลัง VM ย้าย compute ให้รัน `plumb trace` กับปลายทางแล้วเทียบบรรทัด `Control` กับ compute ปัจจุบัน
-

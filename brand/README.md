@@ -1,73 +1,73 @@
 <!-- contentType: Reference · plan: docs/content-plan.md -->
 
-# Brand asset ของ plumb
+# plumb brand assets
 
-หน้านี้รวมไฟล์โลโก้ของ plumb, ความหมายของรูปทรง และกฎการใช้งาน เปิด `preview.html` ใน browser เพื่อดู asset ทุกตัวบนพื้นขาวและพื้นดำ
+This page lists the plumb logo files, what the shapes mean, and the rules for using them. Open `preview.html` in a browser to see every asset on white and on black.
 
-## ความหมายของ mark
+## What the mark means
 
-Mark คือลูกดิ่ง หรือ plumb bob ที่ช่างห้อยจากเชือกเพื่อหาแนวดิ่ง ตรงกับสิ่งที่ plumb ทำ คือไล่ VM ลงไปตรง ๆ ผ่านทุกชั้นของ cloud ตั้งแต่ API ถึง datapath
+The mark is a plumb bob, the weight that builders hang from a string to find true vertical. It matches what plumb does: follow a VM straight down through every layer of the cloud, from the API to the datapath.
 
-Mark มีเพียง 2 รูปทรง คือเส้นเชือกและสามเหลี่ยมทึบที่ชี้ลง สามเหลี่ยมทึบสีเดียวมาจาก Vercel ส่วนช่องว่างระหว่างเชือกกับลูกดิ่งทำให้ mark ไม่ถูกอ่านเป็นลูกศร download
+The mark has only 2 shapes: the string and a solid triangle that points down. The single-color solid triangle comes from Vercel. The gap between the string and the bob keeps the mark from reading as a download arrow.
 
-## ไฟล์
+## Files
 
-| ไฟล์ | ใช้เมื่อ |
+| File | Use it when |
 | --- | --- |
-| `mark.svg` | ฝังใน HTML แล้วให้สีตาม `color` ของ element แม่ ไฟล์ใช้ `currentColor` |
-| `mark-black.svg`, `mark-white.svg` | ใช้เป็นไฟล์ภาพบนพื้นสว่างหรือพื้นมืด |
-| `wordmark.svg`, `wordmark-black.svg`, `wordmark-white.svg` | ใช้ mark คู่กับชื่อ ตัวอักษรเป็นเส้นในไฟล์ จึงไม่ต้องติดตั้ง font |
-| `icon.svg`, `icon-512.png`, `icon-1024.png` | app icon หรือรูปของ repo และ chat bot พื้นดำมุมมน mark สีขาว |
-| `favicon.svg` | favicon ของเว็บ เปลี่ยนเป็นสีขาวเองเมื่อระบบใช้ dark mode เส้นเชือกหนากว่าใน `mark.svg` เพื่อให้ยังเห็นที่ 16 px |
-| `og.svg`, `og.png` | social card สำหรับ link preview ขนาด 2400 × 1350 แบบเดียวกับ vercel.com คือไม่มีข้อความ มีแต่ลูกดิ่งสีดำบนพื้นดำ แสงจากด้านหลังทำให้ขอบสว่าง และมี grain บาง ๆ |
-| `preview.html` | หน้ารวม asset สำหรับตรวจงาน |
+| `mark.svg` | You embed it in HTML and want it to take the parent element's `color`. The file uses `currentColor` |
+| `mark-black.svg`, `mark-white.svg` | You need an image file for a light or dark background |
+| `wordmark.svg`, `wordmark-black.svg`, `wordmark-white.svg` | You show the mark with the name. The letters are paths in the file, so no font needs to be installed |
+| `icon.svg`, `icon-512.png`, `icon-1024.png` | You need an app icon, or a picture for the repo or a chat bot. White mark on a black rounded square |
+| `favicon.svg` | You need the website favicon. It turns white on its own when the system uses dark mode. The string is thicker than in `mark.svg` so it stays visible at 16 px |
+| `og.svg`, `og.png` | You need a social card for link previews, at 2400 × 1350. Like vercel.com, it has no text: a black plumb bob on black, lit from behind so its edges glow, with a light grain |
+| `preview.html` | You review the assets on one page |
 
-## สี
+## Colors
 
-plumb ใช้เฉพาะขาวและดำ เหมือน Vercel สีอื่นใช้เฉพาะสถานะใน CLI และใช้กับโลโก้ไม่ได้
+Like Vercel, plumb uses only black and white. Other colors are only for statuses in the CLI and never go on the logo.
 
-| ชื่อ     | ค่า       | ใช้กับ                                         |
-| -------- | --------- | ---------------------------------------------- |
-| Black    | `#000000` | mark, wordmark และพื้นของ icon กับ social card |
-| White    | `#FFFFFF` | mark บนพื้นดำ                                  |
-| Gray 400 | `#A1A1A1` | ข้อความรองบนพื้นดำ                             |
+| Name | Value | Use for |
+| --- | --- | --- |
+| Black | `#000000` | Mark, wordmark, and the background of icon and social card |
+| White | `#FFFFFF` | Mark on black |
+| Gray 400 | `#A1A1A1` | Secondary text on black |
 
-## Font
+## Fonts
 
-Wordmark วาดเป็นเส้นหนา 7 หน่วย บน x-height 30 หน่วย ใช้แทนตัวอักษรได้โดยไม่ต้องพึ่ง font ข้อความอื่นให้ใช้ Geist ถ้ามี แล้วไล่ลงไปที่ Inter และ font ของระบบ ส่วนโค้ดและคำสั่งให้ใช้ Geist Mono แล้วไล่ลงไปที่ SF Mono และ Menlo
+The wordmark is drawn with a 7-unit stroke on a 30-unit x-height, so it replaces the letters without depending on a font. For other text, use Geist if you have it, then fall back to Inter and the system font. For code and commands, use Geist Mono, then fall back to SF Mono and Menlo.
 
-## ระยะรอบโลโก้และขนาดเล็กสุด
+## Clear space and minimum size
 
-ระยะว่างรอบ mark และ wordmark ต้องไม่น้อยกว่าความยาวของเส้นเชือก ขนาดเล็กสุดของแต่ละไฟล์เป็นดังนี้
+Leave space around the mark and the wordmark at least as long as the string. The minimum size of each file is:
 
-| ไฟล์     | ขนาดเล็กสุด |
-| -------- | ----------- |
-| Mark     | 24 px       |
-| Wordmark | 96 px       |
-| Icon     | 32 px       |
-| Favicon  | 16 px       |
+| File     | Minimum size |
+| -------- | ------------ |
+| Mark     | 24 px        |
+| Wordmark | 96 px        |
+| Icon     | 32 px        |
+| Favicon  | 16 px        |
 
-ถ้าต้องการขนาดเล็กกว่านี้ ให้ใช้ `favicon.svg`
+If you need anything smaller, use `favicon.svg`.
 
-## สิ่งที่ห้ามทำ
+## Don'ts
 
-รายการนี้ทำให้ mark อ่านเป็นลูกดิ่งไม่ได้ หรือเสียความเรียบแบบสีเดียว
+Each of these makes the mark stop reading as a plumb bob, or breaks its plain single color.
 
-- ห้ามหมุน mark หรือกลับให้ลูกดิ่งชี้ขึ้น
-- ห้ามเติมสีหรือ gradient
-- ห้ามยืดหรือบีบสัดส่วน
-- ห้ามต่อเส้นเชือกเข้ากับสามเหลี่ยม เพราะ mark จะกลายเป็นลูกศร
-- ห้ามเพิ่มรูปทรง เส้นแบ่ง หรือเงา
-- ห้ามวาง mark บนพื้นลวดลายที่ทำให้ช่องว่างระหว่างเชือกกับลูกดิ่งหายไป
-- ห้ามพิมพ์คำว่า plumb ด้วย font อื่นแทน wordmark
+- Don't rotate the mark or flip it so the bob points up.
+- Don't add colors or gradients.
+- Don't stretch or squash it.
+- Don't join the string to the triangle, because the mark turns into an arrow.
+- Don't add shapes, dividers or shadows.
+- Don't place the mark on a pattern that hides the gap between the string and the bob.
+- Don't type the word plumb in another font in place of the wordmark.
 
-## แก้ไขและ export ใหม่
+## Edit and export again
 
-รูปทรงของ mark อยู่ใน `mark.svg` ไฟล์อื่นใช้พิกัดชุดเดียวกัน ถ้าแก้ mark ต้องแก้ทุกไฟล์ที่มีรูปทรงนี้ด้วย ไฟล์ PNG สร้างจาก SVG ด้วย Chrome แบบ headless คำสั่งนี้สร้าง `og.png` ขนาด 2400 × 1350:
+The mark's shapes live in `mark.svg`, and the other files use the same coordinates. If you change the mark, change every file that contains it. PNG files are made from the SVGs with headless Chrome. This command makes `og.png` at 2400 × 1350:
 
 ```sh
 chrome --headless --force-device-scale-factor=2 \
 	--window-size=1200,675 --screenshot=og.png og.html
 ```
 
-`og.html` คือหน้า HTML ที่มี `<img src="og.svg">` ขนาด 1200 × 675 และ margin เป็น 0 ส่วน icon ใช้ `--force-device-scale-factor=1` ที่ 512 และ `2` ที่ 1024 แสงและ grain ของ `og.svg` ใช้ SVG filter ภาพที่ได้จึงต่างกันเล็กน้อยตาม browser ที่ render ให้ใช้ `og.png` เป็นไฟล์ที่เผยแพร่
+`og.html` is an HTML page with `<img src="og.svg">` at 1200 × 675 and a margin of 0. For the icons, use `--force-device-scale-factor=1` for 512 and `2` for 1024. The light and grain in `og.svg` come from SVG filters, so the result differs slightly between browsers. Publish `og.png`.

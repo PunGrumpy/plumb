@@ -45,8 +45,8 @@ This is the port section of a trace against the built-in lab, with long lines cu
 Build plumb with Go 1.24 or later, then trace a VM in the lab that ships inside the binary. You don't need a cloud or credentials for this step:
 
 ```sh
-make build
-./bin/plumb demo
+make -C apps/cli build
+./apps/cli/bin/plumb demo
 ```
 
 On a real cloud, source your openrc and use the commands in this order:
@@ -61,11 +61,11 @@ On a real cloud, source your openrc and use the commands in this order:
 | `plumb explain <code>` | A trace ends with a `More` line and you want the details |
 | `plumb whoami` | You want to see the user, project and OpenSDN URLs plumb uses |
 
-To install plumb on a server, run `make dist` and copy the static binary for its platform from `dist/`.
+To install plumb on a server, run `make -C apps/cli dist` and copy the static binary for its platform from `apps/cli/dist/`.
 
 ## Documentation
 
-The guides in `docs/` are written in Thai:
+The guides are in `docs/`:
 
 | Guide | Read it when |
 | --- | --- |

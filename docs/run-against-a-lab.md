@@ -1,85 +1,85 @@
 <!-- contentType: How-to · plan: docs/content-plan.md -->
 
-# วิธีใช้ plumb กับ DevStack และ lab OpenSDN
+# Use plumb with DevStack and OpenSDN
 
-หน้านี้บอกขั้นตอนติดตั้ง plumb บน server, ตรวจว่า server เข้าถึงทุกชั้นได้ แล้วรันกับ cloud จริง 2 แบบ คือ DevStack ที่ใช้ OVN และ lab ที่ใช้ OpenSDN flag และ variable ทั้งหมดอยู่ใน [ตัวเลือกของ plumb](cli-reference.md)
+This page shows how to install plumb on a server, check that the server reaches every layer, and run plumb against 2 kinds of real cloud: DevStack with OVN and a lab with OpenSDN. All flags and variables are in the [CLI reference](cli-reference.md).
 
-## ติดตั้งบน server
+## Install on a server
 
-plumb ต้องเข้าถึง introspect ของ vRouter agent บน compute ทุกเครื่อง จึงควรรันจาก bastion หรือ controller ที่อยู่ใน management network
+plumb needs to reach the vRouter agent introspect on every compute node, so run it from a bastion or controller on the management network.
 
-1. Build binary แบบ static บนเครื่องของคุณ:
+1. Build the static binaries on your machine:
 
    ```sh
-   make dist
+   make -C apps/cli dist
    ```
 
-   คำสั่งนี้สร้าง `dist/plumb-linux-amd64`, `dist/plumb-linux-arm64` และ `dist/plumb-darwin-arm64` ถ้าต้องการให้ binary แจ้งเมื่อมี version ใหม่ ให้ส่ง URL ที่ตอบ release ล่าสุด:
+   This command creates `apps/cli/dist/plumb-linux-amd64`, `apps/cli/dist/plumb-linux-arm64` and `apps/cli/dist/plumb-darwin-arm64`. If you want the binary to tell you when a new version is out, pass a URL that returns the latest release:
 
    ```sh
-   make dist VERSION=v0.1.0 \
+   make -C apps/cli dist VERSION=v0.1.0 \
    	UPDATE_URL=https://api.github.com/repos/your_org/plumb/releases/latest
    ```
 
-2. คัดลอก binary ที่ตรงกับ server:
+2. Copy the binary that matches the server:
 
    ```sh
-   scp dist/plumb-linux-amd64 your_user@your_bastion:~/bin/plumb
+   scp apps/cli/dist/plumb-linux-amd64 your_user@your_bastion:~/bin/plumb
    ```
 
-binary ไม่ต้องใช้ library อื่น server จึงไม่ต้องติดตั้ง Go
+The binary needs no other libraries, so you don't need to install Go on the server.
 
-## ตรวจว่า server เข้าถึงทุกชั้น
+## Check that the server reaches every layer
 
-1. บน server ให้ source openrc ของ project ที่ VM อยู่:
+1. On the server, source the openrc of the project that the VM is in:
 
    ```sh
    source ~/admin-openrc
    ```
 
-2. ถ้า cloud ใช้ OpenSDN ให้ link cloud นี้กับ Config API:
+2. If the cloud uses OpenSDN, link this cloud to its Config API:
 
    ```sh
    plumb link --config-url http://config_node_ip:8082
    ```
 
-   plumb จำ URL นี้ไว้ใน `~/.config/plumb/config.json` คู่กับ `OS_AUTH_URL` ของ cloud คำสั่ง `trace` และ `doctor` จึงใช้ URL นี้เองทุกครั้งที่ source openrc ของ cloud นี้
+   plumb saves this URL in `~/.config/plumb/config.json` with the cloud's `OS_AUTH_URL`. The `trace` and `doctor` commands then use this URL each time you source this cloud's openrc.
 
-3. รัน `doctor`:
+3. Run `doctor`:
 
    ```sh
    plumb doctor
    ```
 
-`doctor` ขอ token จาก Keystone แล้วเรียก endpoint ทุกตัวที่ trace ต้องใช้ รวมถึง vRouter agent บน compute ทุกเครื่อง บรรทัดสุดท้ายบอกว่า trace จาก server นี้ไปได้ถึงชั้นไหน compute ที่เข้าไม่ถึงแสดงเป็นรายการใต้บรรทัด `vrouter`
+`doctor` gets a token from Keystone, then calls every endpoint that a trace needs, including the vRouter agent on every compute node. The last line tells you which layer a trace from this server can reach. Compute nodes that plumb can't reach are listed under the `vrouter` line.
 
-ถ้า `doctor` จบด้วย `✗` ให้ทำตามบรรทัด `Hint` ก่อนรัน trace
+If `doctor` ends with `✗`, follow the `Hint` line before you run a trace.
 
-## รันกับ DevStack
+## Run against DevStack
 
-DevStack ใช้ OVN จึงไม่ต้อง link Config API ให้ส่งชื่อหรือ UUID ของ VM:
-
-```sh
-plumb your_vm_name
-```
-
-ใน tree บรรทัด `Neutron` ของ port ต้องแสดง `vif_type=ovs` ถ้าแสดง `vif_type=vrouter` แปลว่า cloud นี้ใช้ OpenSDN ให้ทำตามหัวข้อถัดไป
-
-ถ้ามี VM หลายเครื่องที่ใช้ชื่อเดียวกัน plumb จะแสดง UUID ของทุกเครื่อง ให้รันใหม่ด้วย UUID ที่ต้องการ
-
-## รันกับ lab OpenSDN
-
-หลัง link cloud ตามหัวข้อ "ตรวจว่า server เข้าถึงทุกชั้น" แล้ว ให้รัน:
+DevStack uses OVN, so you don't need to link a Config API. Pass the VM's name or UUID:
 
 ```sh
 plumb your_vm_name
 ```
 
-plumb หา control node จาก object `bgp-router` และหา vRouter agent จาก object `virtual-router` ใน Config API
+In the tree, the port's `Neutron` line must show `vif_type=ovs`. If it shows `vif_type=vrouter`, this cloud uses OpenSDN. Follow the next section.
 
-ถ้าไม่แน่ใจว่า plumb ใช้ URL ไหน ให้รัน `plumb whoami` ซึ่งแสดง URL และบอกว่ามาจาก `plumb link`, environment variable หรือ flag
+If more than one VM has the same name, plumb shows the UUID of each one. Run it again with the UUID you want.
 
-ถ้า stage `control` หรือ `vrouter` fail เพราะ server เข้า IP ที่ config บันทึกไว้ไม่ได้ ให้ระบุ URL เอง:
+## Run against an OpenSDN lab
+
+After you link the cloud as in "Check that the server reaches every layer", run:
+
+```sh
+plumb your_vm_name
+```
+
+plumb finds the control nodes from the `bgp-router` objects and the vRouter agents from the `virtual-router` objects in the Config API.
+
+If you're not sure which URLs plumb uses, run `plumb whoami`. It shows the URLs and whether each one comes from `plumb link`, an environment variable or a flag.
+
+If the `control` or `vrouter` stage fails because the server can't reach the IPs saved in the config, set the URLs yourself:
 
 ```sh
 plumb your_vm_name \
@@ -87,53 +87,53 @@ plumb your_vm_name \
 	--agent-url http://compute_mgmt_ip:8085
 ```
 
-ถ้าไม่ต้องการส่ง Keystone token ไปที่ Config API ให้เพิ่ม `--no-config-token`
+If you don't want to send your Keystone token to the Config API, add `--no-config-token`.
 
-## ตรวจว่า VM หนึ่งส่ง traffic ถึงอีกเครื่องได้
+## Check that one VM can send traffic to another
 
-ถ้าได้รับแจ้งว่า VM A คุยกับ VM B ไม่ได้ ให้ส่งทั้งคู่และ protocol ที่ใช้:
+If someone reports that VM A can't talk to VM B, pass both VMs and the protocol they use:
 
 ```sh
 plumb path web-01 db-01 --port 5432
 ```
 
-plumb ตรวจ port, router, security group ทั้ง 2 ฝั่ง และบน OpenSDN ตรวจ route กับ next hop ใน VRF ของต้นทาง บรรทัดสุดท้ายบอก check แรกที่ไม่ผ่าน และบรรทัด `Hint` บอกคำสั่งที่แก้ได้ เช่น `openstack security group rule create …` ถ้าใส่ `--port` โดยไม่ใส่ `--proto` plumb จะตรวจ TCP ถ้าไม่ใส่ทั้งคู่จะตรวจ ICMP แบบ `ping`
+plumb checks the ports, routers and security groups on both sides, and on OpenSDN it checks the route and next hop in the source VRF. The last line names the first check that fails, and the `Hint` line gives a command that fixes it, for example `openstack security group rule create …`. If you pass `--port` without `--proto`, plumb checks TCP. If you pass neither, it checks ICMP like `ping`.
 
-บน DevStack ที่ใช้ OVN check `route` และ `next-hop` จะถูกข้าม บรรทัดสุดท้ายจึงบอกว่า Neutron ปล่อย traffic ไม่ได้ยืนยันว่า datapath ส่งได้จริง
+On DevStack with OVN, the `route` and `next-hop` checks are skipped, so the last line says that Neutron allows the traffic, not that the datapath delivers it.
 
-## บันทึก lab ไว้เปิดแบบ offline
+## Record a lab to open offline
 
-1. รันกับ lab จริงพร้อมบันทึก response:
+1. Run against the real lab and record the responses:
 
    ```sh
    plumb your_vm_name --record lab-recordings/web-01
    ```
 
-2. คัดลอก directory กลับมาที่เครื่องของคุณ แล้วเปิดผล โดยใช้ `OS_AUTH_URL` และ flag ชุดเดียวกับตอนบันทึก:
+2. Copy the directory back to your machine, then open the result with the same `OS_AUTH_URL` and flags you used to record:
 
    ```sh
    plumb your_vm_name --replay lab-recordings/web-01
    ```
 
-ไฟล์ใน `lab-recordings/` มี IP ภายในและชื่อ project ของ lab ห้าม commit ไฟล์เหล่านี้ `.gitignore` ของ repo ไม่รวม directory นี้อยู่แล้ว
+The files in `lab-recordings/` contain the lab's internal IPs and project names. Don't commit these files. The repo's `.gitignore` already excludes this directory.
 
-## เทียบชื่อ field ของ introspect กับ lab
+## Compare introspect field names with your lab
 
-ชื่อ request และ field ของ introspect ต่างกันได้ตาม release ของ OpenSDN ให้ทำขั้นตอนนี้ครั้งแรกที่ใช้ plumb กับ lab ใหม่
+Introspect request and field names can change between OpenSDN releases. Do this the first time you use plumb with a new lab.
 
-1. บันทึก lab ตามหัวข้อก่อนหน้า
-2. เปิดไฟล์ที่ชื่อขึ้นต้นด้วย `GET_` ตามด้วย IP ของ control node หรือ compute
-3. เทียบชื่อ element ในไฟล์กับตารางใน [API ที่ plumb เรียกในแต่ละชั้น](api-reference.md)
-4. ถ้าชื่อไม่ตรง ให้แก้ชื่อใน `internal/opensdn/control/control.go` หรือ `internal/opensdn/agent/agent.go`
+1. Record the lab as in the previous section.
+2. Open the files whose names start with `GET_` followed by the IP of a control node or compute node.
+3. Compare the element names in the files with the tables in [APIs plumb calls](api-reference.md).
+4. If a name doesn't match, change it in `apps/cli/internal/opensdn/control/control.go` or `apps/cli/internal/opensdn/agent/agent.go`.
 
-อีกทางหนึ่งคือเปิด `http://control_node_ip:8083/` ใน browser หน้านั้นแสดงรายการ request ทั้งหมดของ process
+You can also open `http://control_node_ip:8083/` in a browser. That page lists every request the process serves.
 
-## ส่งผลให้โปรแกรมอื่น
+## Send the output to other programs
 
-ถ้าต้องการใช้ผลใน script ให้ใช้ `--json` แล้วอ่านด้วย `jq` คำสั่งนี้แสดง code ของคำเตือนทุกตัว:
+To use the output in a script, use `--json` and read it with `jq`. This command shows the code of every warning:
 
 ```sh
 plumb your_vm_name --json | jq -r '.steps[].warnings[]?.code'
 ```
 
-Script ตรวจ exit code ได้ `1` แปลว่ามีอย่างน้อย 1 stage ที่ fail
+Scripts can check the exit code. `1` means at least 1 stage failed.

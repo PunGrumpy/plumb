@@ -1,0 +1,27 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "futureFlags": {
+    "experimentalGoWorkspaces": true,
+    "experimentalTaskCommand": true
+  },
+  "ui": "tui",
+  "tasks": {
+    "build": { "dependsOn": ["^build"] },
+    "test": {},
+    "check": {},
+    "fix": { "cache": false },
+    "cli#test": {
+      "command": ["go", "test", "-race", "./..."],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/docs/troubleshooting.md"]
+    },
+    "cli#check": {
+      "command": ["make", "vet"]
+    },
+    "cli#fix": {
+      "command": ["go", "fmt", "./..."],
+      "cache": false
+    },
+    "//#check": {},
+    "//#fix": { "cache": false }
+  }
+}

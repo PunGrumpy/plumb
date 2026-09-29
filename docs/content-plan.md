@@ -1,48 +1,48 @@
 <!-- contentType: Reference -->
 
-# แผนเนื้อหาเอกสารของ plumb
+# Content plan
 
-หน้านี้เป็นแผนของเอกสารทุกหน้าใน repo นี้ บอกว่าแต่ละหน้ามีไว้ทำอะไร เขียนให้ใคร และยังมีคำถามอะไรค้างอยู่
+This page is the plan for every doc page in this repo. It says what each page is for, who it's written for, and which questions are still open.
 
-## ภาพรวมและผู้อ่าน
+## Overview and readers
 
-เอกสารชุดนี้เขียนให้ผู้อ่าน 2 กลุ่ม:
+These docs are written for 2 groups of readers:
 
-- ผู้ฝึกงาน OJT ที่อยากเข้าใจว่า VM หนึ่งเครื่องผ่าน OpenStack และ OpenSDN ชั้นไหนบ้าง เอกสารนี้ใช้ประกอบ OJT ข้อ 11 เรื่อง DevStack, ข้อ 13 เรื่อง API Tutorial OpenSDN และ OpenStack และข้อ 19 เรื่อง Python Clean OpenStack
-- ผู้ดูแล cloud ที่อยากรู้ว่า chain ของ VM หยุดที่ชั้นไหน โดยไม่ต้องเปิด introspect ทีละหน้า
+- OJT trainees who want to understand which OpenStack and OpenSDN layers a VM goes through. These docs support OJT item 11 on DevStack, item 13 on the OpenSDN and OpenStack API Tutorial, and item 19 on Python Clean OpenStack.
+- Cloud operators who want to know which layer a VM's chain stops at, without opening introspect one page at a time.
 
-## เป้าหมายของผู้อ่าน
+## Reader goals
 
-หลังอ่านครบ ผู้อ่านควรทำสิ่งต่อไปนี้ได้:
+After reading everything, readers should be able to:
 
-1. รัน plumb กับ lab จำลอง, DevStack และ lab OpenSDN
-2. อธิบายว่า UUID และชื่อ object ตัวไหนเชื่อมแต่ละชั้นเข้าด้วยกัน
-3. อธิบายว่าทำไม Config API แยกจาก control node
-4. แปลความหมายคำเตือนแต่ละข้อ แล้วเลือก API ที่จะตรวจต่อ
-5. เพิ่ม stage ใหม่หรือเขียน UI ใหม่ที่อ่าน JSON ของ plumb
+1. Run plumb against the built-in lab, DevStack and an OpenSDN lab.
+2. Explain which UUIDs and object names link each layer together.
+3. Explain why the Config API is separate from the control node.
+4. Interpret each warning and pick the API to check next.
+5. Add a stage or write a new UI that reads plumb's JSON.
 
-## หน้าเอกสารแต่ละหน้า
+## Each doc page
 
-แต่ละหน้าทำงานเดียวตาม content type ของตัวเอง:
+Each page does one job, based on its content type:
 
-| หน้า | Content type | เป้าหมาย |
+| Page | Content type | Goal |
 | --- | --- | --- |
-| [README](../README.md) | Landing | เลือกหน้าที่ต้องอ่านต่อ |
-| [รันครั้งแรกกับ lab จำลอง](quickstart.md) | Tutorial | รัน plumb และอ่านผลลัพธ์ |
-| [ใช้กับ DevStack และ lab จริง](run-against-a-lab.md) | How-to | รันกับ cloud จริงและบันทึก lab |
-| [เพิ่ม stage ใหม่](add-a-stage.md) | How-to | เพิ่ม API ใหม่เข้า trace |
-| [ออก release](releasing.md) | How-to | ออก version ใหม่และ binary |
-| [ตัวเลือกของ plumb](cli-reference.md) | Reference | ค้น flag, variable และ exit code |
-| [ชั้นต่าง ๆ เชื่อมกันอย่างไร](concepts.md) | Conceptual | อธิบายแต่ละชั้นให้คนอื่นฟังได้ |
-| [การออกแบบ](architecture.md) | Conceptual | อธิบายเหตุผลของโครงสร้างโค้ด |
-| [API ที่เรียก](api-reference.md) | Reference | ตรวจ endpoint และ field |
-| [แปลความหมายคำเตือน](troubleshooting.md) | Troubleshooting | หาสาเหตุเมื่อ chain หยุด |
+| [README](../README.md) | Landing | Pick the next page to read |
+| [Run plumb for the first time](quickstart.md) | Tutorial | Run plumb and read the output |
+| [Use plumb with DevStack and OpenSDN](run-against-a-lab.md) | How-to | Run against a real cloud and record a lab |
+| [Add a stage](add-a-stage.md) | How-to | Add a new API to the trace |
+| [Release plumb](releasing.md) | How-to | Release a new version and binaries |
+| [CLI reference](cli-reference.md) | Reference | Look up flags, variables and exit codes |
+| [How a VM's request crosses each layer](concepts.md) | Conceptual | Explain each layer to someone else |
+| [How plumb is built](architecture.md) | Conceptual | Explain the reasons behind the code layout |
+| [APIs plumb calls](api-reference.md) | Reference | Check endpoints and fields |
+| [What each warning means](troubleshooting.md) | Troubleshooting | Find the cause when the chain stops |
 
-## คำถามที่ยังเปิดอยู่
+## Open questions
 
-ข้อเหล่านี้ต้องยืนยันกับ lab OpenSDN จริงก่อนใช้ plumb บน environment ของทีม:
+Confirm these against a real OpenSDN lab before you use plumb on the team's environment:
 
-- ชื่อ parameter และ field ของ Sandesh บน release ที่ทีมใช้ตรงกับใน [API ที่เรียก](api-reference.md) หรือไม่
-- Config API บน lab เปิด keystone auth หรือไม่
-- ใครอนุญาตให้เครื่องที่รัน plumb เข้า port 8082, 8083 และ 8085 ได้ คนที่ต้องถามคือพี่หมู
-- ข้อมูลใน `internal/demo/lab` เขียนขึ้นเองตามรูปแบบของ API ยังไม่ได้บันทึกจาก lab จริง
+- Do the Sandesh parameter and field names on the team's release match those in [APIs plumb calls](api-reference.md)?
+- Does the Config API on the lab have keystone auth turned on?
+- Who allows the machine that runs plumb to reach ports 8082, 8083 and 8085? Ask Moo.
+- The data in `apps/cli/internal/demo/lab` is hand-written to match the API formats. It isn't recorded from a real lab yet.

@@ -1,167 +1,167 @@
 <!-- contentType: Reference · plan: docs/content-plan.md -->
 
-# ตัวเลือกของ plumb
+# CLI reference
 
-หน้านี้รวมคำสั่ง, flag, environment variable, exit code และรูปแบบ JSON ของ `plumb` ตรงกับโค้ดใน `cmd/plumb` และผลของ `plumb <command> -h`
+This page lists the commands, flags, environment variables, exit codes and JSON format of `plumb`. It matches the code in `apps/cli/cmd/plumb` and the output of `plumb <command> -h`.
 
-## คำสั่ง
+## Commands
 
-`plumb` มี 9 คำสั่ง ถ้าไม่ใส่คำสั่ง plumb จะพิมพ์ help
+`plumb` has 9 commands. If you don't give a command, plumb prints help.
 
-| คำสั่ง | หน้าที่ |
+| Command | What it does |
 | --- | --- |
-| `plumb trace <vm>` | ไล่ VM จาก UUID, ชื่อ, fixed IP หรือ floating IP |
-| `plumb <vm>` | ทางลัดของ `plumb trace <vm>` |
-| `plumb path <from> <to>` | ตรวจว่า VM หนึ่งส่ง traffic ถึงอีกเครื่องได้หรือไม่ |
-| `plumb link` | จำ URL ของ OpenSDN สำหรับ cloud ใน `OS_AUTH_URL` แสดง link ปัจจุบันเมื่อไม่มี flag |
-| `plumb whoami` | แสดง user, project, role และ URL ของ Config API พร้อมที่มาของ URL |
-| `plumb demo [scenario]` | ไล่ `web-01` ใน lab ที่ฝังใน binary ไม่ต่อ network |
-| `plumb doctor` | ตรวจ credential และ endpoint ทุกตัวที่ trace ต้องใช้ |
-| `plumb explain [code]` | อธิบาย code ของคำเตือน ถ้าไม่ใส่ code จะแสดงทุก code |
-| `plumb version` | พิมพ์ version |
+| `plumb trace <vm>` | Traces a VM by UUID, name, fixed IP or floating IP |
+| `plumb <vm>` | Shortcut for `plumb trace <vm>` |
+| `plumb path <from> <to>` | Checks whether one VM can send traffic to another |
+| `plumb link` | Remembers the OpenSDN URLs for the cloud in `OS_AUTH_URL`. Shows the current link when you give no flags |
+| `plumb whoami` | Shows the user, project, roles and Config API URL, with where the URL came from |
+| `plumb demo [scenario]` | Traces `web-01` in the lab built into the binary, without using the network |
+| `plumb doctor` | Checks the credentials and every endpoint a trace needs |
+| `plumb explain [code]` | Explains a warning code. If you don't give a code, it shows every code |
+| `plumb version` | Prints the version |
 
-ถ้าพิมพ์ชื่อคำสั่งผิด plumb จะเสนอชื่อที่ใกล้ที่สุด `<vm>` เป็น UUID, ชื่อ หรือ IP ก็ได้ ถ้าเป็น IP stage `nova` ค้น port ที่มี fixed IP นั้นใน Neutron ถ้าไม่เจอจะค้น floating IP แล้วใช้ `device_id` ของ port เป็น VM `<vm>` ที่ไม่ใช่ UUID และไม่ใช่ IP ถือเป็นชื่อ stage `nova` ค้น server ที่ชื่อตรงกันทุกตัวอักษรใน project ของ token ถ้าไม่เจอและ token มี role `admin` จะค้นต่อในทุก project ใส่ flag ได้ทั้งก่อนและหลัง `<vm>`
+If you mistype a command name, plumb suggests the closest one. `<vm>` can be a UUID, a name or an IP. For an IP, the `nova` stage searches Neutron for a port with that fixed IP. If it finds none, it searches floating IPs. It then uses the port's `device_id` as the VM. A `<vm>` that is neither a UUID nor an IP is a name. The `nova` stage searches for a server with that exact name in the token's project. If it finds none and the token has the `admin` role, it searches every project. You can put flags before or after `<vm>`.
 
-## Scenario ของ demo
+## Demo scenarios
 
-`plumb demo --list` แสดงรายการนี้:
+`plumb demo --list` shows this list:
 
-| Scenario | ชั้นที่พัง | Exit code |
+| Scenario | Broken layer | Exit code |
 | --- | --- | --- |
-| `healthy` | ไม่มี เป็นค่าเริ่มต้น | `0` |
-| `devstack` | ไม่มี Config API จึงข้าม 3 stage ของ OpenSDN | `0` |
-| `vmi-missing` | port ใน Neutron ไม่มี VMI ใน OpenSDN | `1` |
-| `missing-route` | `control-02` ไม่มี route ของ VM | `0` |
-| `label-mismatch` | agent ใช้ label ที่ control node ไม่ได้ประกาศ | `0` |
-| `agent-down` | introspect ของ agent ปฏิเสธการเชื่อมต่อ | `1` |
+| `healthy` | None. This is the default | `0` |
+| `devstack` | No Config API, so the 3 OpenSDN stages are skipped | `0` |
+| `vmi-missing` | The Neutron port has no VMI in OpenSDN | `1` |
+| `missing-route` | `control-02` has no route for the VM | `0` |
+| `label-mismatch` | The agent uses a label the control node didn't advertise | `0` |
+| `agent-down` | The agent introspect refuses the connection | `1` |
 
-## Environment variable ของ OpenStack
+## OpenStack environment variables
 
-`plumb <vm>` และ `plumb doctor` อ่าน variable ชุดเดียวกับที่ openrc export:
+`plumb <vm>` and `plumb doctor` read the same variables that openrc exports:
 
-| Variable | ต้องมี | ค่าเริ่มต้นและหมายเหตุ |
+| Variable | Required | Default and notes |
 | --- | --- | --- |
-| `OS_AUTH_URL` | ใช่ | เติม `/v3` ท้าย URL ถ้าไม่มี |
-| `OS_USERNAME`, `OS_PASSWORD` | ใช่ ยกเว้นใช้ application credential | |
-| `OS_PROJECT_NAME` หรือ `OS_PROJECT_ID` | ใช่ ยกเว้นใช้ application credential | อ่าน `OS_TENANT_NAME` และ `OS_TENANT_ID` แทนได้ |
-| `OS_USER_DOMAIN_NAME` หรือ `OS_USER_DOMAIN_ID` | ไม่ | `Default` |
-| `OS_PROJECT_DOMAIN_NAME` หรือ `OS_PROJECT_DOMAIN_ID` | ไม่ | `Default` |
-| `OS_APPLICATION_CREDENTIAL_ID`, `OS_APPLICATION_CREDENTIAL_SECRET` | ไม่ | ใช้แทน username และ password |
-| `OS_REGION_NAME` | ไม่ | ว่าง แปลว่ารับ endpoint ของ region แรกใน catalog |
-| `OS_INTERFACE` | ไม่ | `public` และรับ `publicURL` ได้ |
+| `OS_AUTH_URL` | Yes | Adds `/v3` to the end of the URL if it's missing |
+| `OS_USERNAME`, `OS_PASSWORD` | Yes, unless you use an application credential |  |
+| `OS_PROJECT_NAME` or `OS_PROJECT_ID` | Yes, unless you use an application credential | Also reads `OS_TENANT_NAME` and `OS_TENANT_ID` instead |
+| `OS_USER_DOMAIN_NAME` or `OS_USER_DOMAIN_ID` | No | `Default` |
+| `OS_PROJECT_DOMAIN_NAME` or `OS_PROJECT_DOMAIN_ID` | No | `Default` |
+| `OS_APPLICATION_CREDENTIAL_ID`, `OS_APPLICATION_CREDENTIAL_SECRET` | No | Used instead of a username and password |
+| `OS_REGION_NAME` | No | Empty, which means plumb takes the endpoint of the first region in the catalog |
+| `OS_INTERFACE` | No | `public`. Also accepts `publicURL` |
 
-## Check ของ `plumb path`
+## `plumb path` checks
 
-`plumb path` trace VM ทั้ง 2 เครื่องแล้วตรวจตามลำดับที่ packet ผ่าน
+`plumb path` traces both VMs, then runs checks in the order a packet passes through.
 
-| Check | ผ่านเมื่อ | ต้องใช้ |
+| Check | Passes when | Needs |
 | --- | --- | --- |
-| `resolve` | VM ทั้ง 2 มี port ใน Neutron และมี IPv4 | ทุก cloud |
-| `ports` | port ทั้ง 2 เป็น `ACTIVE` | ทุก cloud |
-| `network` | IP ปลายทางอยู่ใน subnet ของต้นทาง หรือมี router ตัวเดียวกันต่อทั้ง 2 network | ทุก cloud |
-| `egress` | security group ของต้นทางมี egress rule ที่ปล่อย traffic ไป IP ปลายทาง หรือปิด port security | ทุก cloud |
-| `ingress` | security group ของปลายทางมี ingress rule ที่ปล่อย traffic จาก IP หรือ group ของต้นทาง หรือปิด port security | ทุก cloud |
-| `route` | VRF ของต้นทางบน compute ต้นทางมี route ไป IP ปลายทาง | OpenSDN |
-| `next-hop` | route ส่งเข้า tap ของปลายทางบน compute เดียวกัน หรือ tunnel ไป compute ของปลายทางด้วย label เดียวกับ interface ของปลายทาง | OpenSDN |
+| `resolve` | Both VMs have a port in Neutron with an IPv4 address | Any cloud |
+| `ports` | Both ports are `ACTIVE` | Any cloud |
+| `network` | The destination IP is in the source's subnet, or one router connects both networks | Any cloud |
+| `egress` | A security group of the source has an egress rule that allows traffic to the destination IP, or port security is off | Any cloud |
+| `ingress` | A security group of the destination has an ingress rule that allows traffic from the source's IP or group, or port security is off | Any cloud |
+| `route` | The source's VRF on the source compute node has a route to the destination IP | OpenSDN |
+| `next-hop` | The route sends traffic into the destination's tap on the same compute node, or tunnels it to the destination's compute node with the same label as the destination's interface | OpenSDN |
 
-Security group เป็นแบบ stateful plumb จึงตรวจเฉพาะ egress ของต้นทางและ ingress ของปลายทาง ICMP หมายถึง echo request แบบที่ `ping` ส่ง ส่วน `plumb path` ยังไม่ตรวจ IPv6, floating IP ที่เรียกจากนอก cloud และ network policy ของ OpenSDN โดยตรง
+Security groups are stateful, so plumb checks only egress on the source and ingress on the destination. ICMP means an echo request, like the one `ping` sends. `plumb path` doesn't yet check IPv6, floating IPs reached from outside the cloud or OpenSDN network policies directly.
 
-| Flag | ค่าเริ่มต้น | หน้าที่ |
+| Flag | Default | What it does |
 | --- | --- | --- |
-| `--proto` | `icmp` หรือ `tcp` ถ้าใส่เฉพาะ `--port` | protocol ที่ตรวจ `icmp`, `tcp` หรือ `udp` |
-| `--port` | ไม่มี | port ปลายทาง ต้องใส่เมื่อใช้ `tcp` หรือ `udp` |
+| `--proto` | `icmp`, or `tcp` if you only set `--port` | The protocol to check: `icmp`, `tcp` or `udp` |
+| `--port` | None | The destination port. Required with `tcp` or `udp` |
 
-`plumb path` รับ flag ของ endpoint, output, `--record` และ `--replay` เหมือน `plumb trace` และจบด้วย exit code `1` เมื่อ check ใดไม่ผ่าน
+`plumb path` accepts the same endpoint flags, output flags, `--record` and `--replay` as `plumb trace`. It exits with code `1` when any check fails.
 
-## Flag ของ `plumb link`
+## `plumb link` flags
 
-| Flag | หน้าที่ |
+| Flag | What it does |
 | --- | --- |
-| `--config-url` | URL ของ Config API ที่จะจำ |
-| `--control-url` | URL ของ control introspect ที่จะจำ คั่นด้วย comma |
-| `--remove` | ลบ link ของ cloud นี้ |
-| `--force` | บันทึกแม้ Config API ไม่ตอบจากเครื่องนี้ |
+| `--config-url` | The Config API URL to remember |
+| `--control-url` | The control introspect URLs to remember, separated by commas |
+| `--remove` | Removes the link for this cloud |
+| `--force` | Saves even if the Config API doesn't respond from this machine |
 
-ก่อนบันทึก `plumb link` ส่ง `GET` ไปที่ `--config-url` ถ้าไม่มี HTTP response กลับมา คำสั่งจะจบด้วย exit code `1` และไม่บันทึก
+Before it saves, `plumb link` sends a `GET` to `--config-url`. If no HTTP response comes back, the command exits with code `1` and saves nothing.
 
-## ที่มาของ URL ของ OpenSDN
+## Where the OpenSDN URLs come from
 
-`trace`, `doctor` และ `whoami` เลือก URL ของ Config API และ control node จากที่แรกที่มีค่าในลำดับนี้
+`trace`, `doctor` and `whoami` take the Config API and control node URLs from the first place in this list that has a value:
 
-1. Flag `--config-url` และ `--control-url`
-2. Variable `OPENSDN_CONFIG_URL` และ `OPENSDN_CONTROL_URLS`
-3. Link ของ cloud ที่ตรงกับ `OS_AUTH_URL` ใน config file
+1. The `--config-url` and `--control-url` flags
+2. The `OPENSDN_CONFIG_URL` and `OPENSDN_CONTROL_URLS` variables
+3. The link for the cloud that matches `OS_AUTH_URL` in the config file
 
-Config file อยู่ที่ `$XDG_CONFIG_HOME/plumb/config.json` หรือ `~/.config/plumb/config.json` ถ้าไม่ได้ตั้ง `XDG_CONFIG_HOME` variable `PLUMB_CONFIG` เปลี่ยน path ของไฟล์ได้ plumb ถือว่า `OS_AUTH_URL` ที่ต่างกันเพียง `/v3` หรือ `/` ท้าย URL เป็น cloud เดียวกัน และเขียนไฟล์ด้วย permission `0600` เพราะไฟล์มี address ภายใน
+The config file is at `$XDG_CONFIG_HOME/plumb/config.json`, or `~/.config/plumb/config.json` if `XDG_CONFIG_HOME` isn't set. The `PLUMB_CONFIG` variable changes the file's path. plumb treats `OS_AUTH_URL` values that differ only by a trailing `/v3` or `/` as the same cloud. It writes the file with permission `0600` because the file holds internal addresses.
 
-## การแจ้งเตือน version ใหม่
+## New version notices
 
-หลังคำสั่งจบ plumb บอกบน stderr เมื่อมี release ที่ใหม่กว่า version ที่ใช้อยู่ plumb อ่าน release ล่าสุดจาก URL ที่ตั้งตอน build และเก็บผลไว้ใน `$XDG_CACHE_HOME/plumb/update.json` หรือ `~/.cache/plumb/update.json` นาน 24 ชั่วโมง การเช็กทำงานพร้อมกับคำสั่ง และรอหลังคำสั่งจบไม่เกิน 500 ms
+After a command finishes, plumb tells you on stderr when a release newer than your version exists. plumb reads the latest release from a URL set at build time and caches the result in `$XDG_CACHE_HOME/plumb/update.json` or `~/.cache/plumb/update.json` for 24 hours. The check runs alongside the command and waits no more than 500 ms after the command finishes.
 
-plumb ไม่เช็กในกรณีเหล่านี้
+plumb doesn't check in these cases:
 
-- stderr ไม่ใช่ terminal
-- ตั้ง `CI` หรือ `PLUMB_NO_UPDATE_CHECK`
-- ใช้ `--json`
-- binary เป็น version `dev`
-- build โดยไม่ตั้ง `UPDATE_URL`
+- stderr isn't a terminal
+- `CI` or `PLUMB_NO_UPDATE_CHECK` is set
+- You use `--json`
+- The binary is version `dev`
+- The binary was built without `UPDATE_URL`
 
-URL ต้องตอบเป็น JSON แบบ GitHub releases API ที่มี `tag_name` และ `html_url` หรือแบบที่มี `version` และ `url` variable `PLUMB_UPDATE_URL` ใช้แทน URL ที่ตั้งตอน build ได้
+The URL must respond with JSON in the GitHub releases API format, with `tag_name` and `html_url`, or in a format with `version` and `url`. The `PLUMB_UPDATE_URL` variable replaces the URL set at build time.
 
-## Environment variable ของ terminal
+## Terminal environment variables
 
-| Variable | ผล |
+| Variable | Effect |
 | --- | --- |
-| `NO_COLOR` | ปิดสี |
-| `FORCE_COLOR` | เปิดสีแม้ stdout ไม่ใช่ terminal ยกเว้นค่า `0` |
-| `TERM=dumb` | ปิดสี |
-| `CI` | ปิด spinner |
+| `NO_COLOR` | Turns off color |
+| `FORCE_COLOR` | Turns on color even when stdout isn't a terminal, unless the value is `0` |
+| `TERM=dumb` | Turns off color |
+| `CI` | Turns off the spinner |
 
-plumb แสดงสีเมื่อ stdout เป็น terminal และแสดง spinner บน stderr เมื่อ stderr เป็น terminal
+plumb shows color when stdout is a terminal, and shows a spinner on stderr when stderr is a terminal.
 
-## Flag ของ `plumb <vm>` และ `plumb doctor`
+## `plumb <vm>` and `plumb doctor` flags
 
-แต่ละ flag ของ OpenSDN อ่านค่าเริ่มต้นจาก environment variable ในคอลัมน์ที่ 3:
+Each OpenSDN flag reads its default from the environment variable in the third column:
 
-| Flag | ค่าเริ่มต้น | Variable | หน้าที่ |
+| Flag | Default | Variable | What it does |
 | --- | --- | --- | --- |
-| `--config-url` | ว่าง | `OPENSDN_CONFIG_URL` | URL ของ Config API ถ้าว่าง plumb ข้าม stage ของ OpenSDN ทั้ง 3 |
-| `--control-url` | ค้นจาก `bgp-router` | `OPENSDN_CONTROL_URLS` | URL ของ control introspect คั่นด้วย comma |
-| `--agent-url` | IP ของ `virtual-router` และ `--agent-port` | `OPENSDN_AGENT_URL` | URL ของ agent introspect ใช้เฉพาะ `plumb <vm>` |
-| `--control-port` | `8083` | | port ที่ใช้ตอนค้นหา control node เอง |
-| `--agent-port` | `8085` | | port ที่ใช้ตอนค้นหา agent เอง |
-| `--no-config-token` | ปิด | | ไม่ส่ง Keystone token ไปที่ Config API |
-| `--timeout` | `2m0s` | | เวลาสูงสุดของทั้งคำสั่ง |
-| `--request-timeout` | `15s` | | เวลาสูงสุดต่อ HTTP call |
-| `--insecure` | ปิด | | ไม่ตรวจ TLS certificate |
+| `--config-url` | Empty | `OPENSDN_CONFIG_URL` | The Config API URL. If it's empty, plumb skips all 3 OpenSDN stages |
+| `--control-url` | Found from `bgp-router` | `OPENSDN_CONTROL_URLS` | The control introspect URLs, separated by commas |
+| `--agent-url` | The `virtual-router` IP and `--agent-port` | `OPENSDN_AGENT_URL` | The agent introspect URL. Used only by `plumb <vm>` |
+| `--control-port` | `8083` |  | The port plumb uses when it finds control nodes itself |
+| `--agent-port` | `8085` |  | The port plumb uses when it finds the agent itself |
+| `--no-config-token` | Off |  | Doesn't send the Keystone token to the Config API |
+| `--timeout` | `2m0s` |  | The maximum time for the whole command |
+| `--request-timeout` | `15s` |  | The maximum time per HTTP call |
+| `--insecure` | Off |  | Doesn't verify TLS certificates |
 
-`plumb doctor` จำกัดเวลาของแต่ละ probe ไว้ที่ 3 วินาที และ probe compute ได้พร้อมกันครั้งละ 16 เครื่อง
+`plumb doctor` limits each probe to 3 seconds and probes up to 16 compute nodes at a time.
 
-## Flag ของ output
+## Output flags
 
-`plumb <vm>`, `plumb demo` และ `plumb doctor` รับ flag เหล่านี้:
+`plumb <vm>`, `plumb demo` and `plumb doctor` accept these flags:
 
-| Flag | หน้าที่ |
+| Flag | What it does |
 | --- | --- |
-| `--json` | พิมพ์ผลเป็น JSON แทน tree |
-| `--no-color` | ปิดสี |
-| `--no-timings` | ไม่แสดงเวลาของแต่ละ stage |
-| `--debug` | พิมพ์ทุก HTTP call ไปที่ stderr และปิด spinner `--dump-http` ทำงานเหมือนกัน |
+| `--json` | Prints the result as JSON instead of a tree |
+| `--no-color` | Turns off color |
+| `--no-timings` | Doesn't show the time of each stage |
+| `--debug` | Prints every HTTP call to stderr and turns off the spinner. `--dump-http` does the same |
 
-## Flag ของการบันทึก
+## Recording flags
 
-`plumb <vm>` เท่านั้นที่รับ 2 flag นี้ และใช้พร้อมกันไม่ได้:
+Only `plumb <vm>` accepts these 2 flags, and you can't use them together:
 
-| Flag | หน้าที่ |
+| Flag | What it does |
 | --- | --- |
-| `--record DIR` | บันทึกทุก response ลง `DIR` |
-| `--replay DIR` | ตอบทุก call จากไฟล์ใน `DIR` โดยไม่ต่อ network |
+| `--record DIR` | Saves every response to `DIR` |
+| `--replay DIR` | Answers every call from the files in `DIR`, without using the network |
 
-ถ้าใช้ `--replay` โดยไม่ตั้ง `OS_USERNAME` plumb จะใช้ค่า `replay` แทน เพราะไฟล์บันทึกไม่ขึ้นกับ request body
+If you use `--replay` without setting `OS_USERNAME`, plumb uses the value `replay` instead, because recordings don't depend on the request body.
 
-## ไฟล์บันทึก
+## Recording files
 
-`--record` สร้างไฟล์ 1 ไฟล์ต่อ 1 call ชื่อไฟล์มาจาก method, host, path และ query ตาม `httpx.Key` เนื้อหาเป็น HTTP response แบบข้อความ:
+`--record` creates 1 file per call. The file name comes from the method, host, path and query, following `httpx.Key`. The content is the HTTP response as text:
 
 ```text
 HTTP/1.1 200 OK
@@ -170,36 +170,36 @@ Content-Type: application/json
 {"server": {…}}
 ```
 
-ไฟล์เก็บเฉพาะ header `Content-Type` และ `X-Subject-Token` และ `--record` เขียน `recorded-token` แทนค่าจริงของ `X-Subject-Token` ไฟล์ไม่เก็บ request จึงไม่มี password lab ของ `plumb demo` ใช้รูปแบบเดียวกันและอยู่ใน `internal/demo/lab`
+Files keep only the `Content-Type` and `X-Subject-Token` headers, and `--record` writes `recorded-token` in place of the real `X-Subject-Token` value. Files don't store requests, so they contain no passwords. The `plumb demo` lab uses the same format and lives in `apps/cli/internal/demo/lab`.
 
-## Exit code
+## Exit codes
 
-| Exit code | ความหมาย |
+| Exit code | Meaning |
 | --- | --- |
-| `0` | ไม่มี stage หรือ check ที่ fail อาจมีคำเตือน |
-| `1` | มีอย่างน้อย 1 stage หรือ check ที่ fail |
-| `2` | คำสั่ง, argument หรือ flag ไม่ถูกต้อง หรือไม่มี credential |
+| `0` | No stage or check failed. There may be warnings |
+| `1` | At least 1 stage or check failed |
+| `2` | The command, an argument or a flag is invalid, or credentials are missing |
 
-## สถานะของ stage
+## Stage status
 
-หัวข้อ `Steps` แสดงสถานะของแต่ละ stage ด้วยเครื่องหมาย 4 แบบ:
+The `Steps` section shows each stage's status with one of 4 marks:
 
-| เครื่องหมาย | สถานะใน JSON | ความหมาย |
+| Mark | JSON status | Meaning |
 | --- | --- | --- |
-| `✓` | `ok` | API ตอบครบ และข้อมูลระหว่างชั้นตรงกัน |
-| `!` | `warn` | API ตอบ แต่ข้อมูลระหว่างชั้นไม่ตรงกัน |
-| `✗` | `fail` | call หลักของ stage ไม่สำเร็จ |
-| `-` | `skip` | ขาดข้อมูลที่ stage ก่อนหน้าต้องหาให้ |
+| `✓` | `ok` | The API responded in full, and the data matches across layers |
+| `!` | `warn` | The API responded, but the data doesn't match across layers |
+| `✗` | `fail` | The stage's main call failed |
+| `-` | `skip` | Data that an earlier stage should have found is missing |
 
-## JSON ของ trace
+## Trace JSON
 
-`--json` พิมพ์ struct `Trace` ใน `internal/trace/model.go` แต่ละ stage ใน `steps` มี field เหล่านี้:
+`--json` prints the `Trace` struct in `apps/cli/internal/trace/model.go`. Each stage in `steps` has these fields:
 
-| Field | ความหมาย |
+| Field | Meaning |
 | --- | --- |
-| `name`, `status`, `duration_ms` | ชื่อ สถานะ และเวลาของ stage |
-| `error` | ข้อความ error เมื่อ `status` เป็น `fail` หรือเหตุผลเมื่อเป็น `skip` |
-| `code`, `hint` | code และสิ่งที่ต้องตรวจต่อ เมื่อ `status` เป็น `fail` และ plumb รู้สาเหตุ |
-| `warnings[]` | object ที่มี `code`, `message` และ `hint` |
+| `name`, `status`, `duration_ms` | The stage's name, status and time |
+| `error` | The error message when `status` is `fail`, or the reason when it's `skip` |
+| `code`, `hint` | The code and what to check next, when `status` is `fail` and plumb knows the cause |
+| `warnings[]` | Objects with `code`, `message` and `hint` |
 
-`plumb explain` รู้จัก `code` ทุกตัวที่ปรากฏใน JSON
+`plumb explain` knows every `code` that appears in the JSON.

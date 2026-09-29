@@ -1,0 +1,30 @@
+name: "Setup Environment"
+description: "Sets up Go and Bun, then installs dependencies"
+inputs:
+  go:
+    description: "Setup Go environment"
+    required: false
+    default: "true"
+  package-install:
+    description: "Run bun install"
+    required: false
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup Go"
+      if: inputs.go == 'true'
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: apps/cli/go.mod
+
+    - name: "Setup Bun"
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: package.json
+
+    - name: "Install dependencies"
+      if: inputs.package-install == 'true'
+      shell: bash
+      run: bun install --frozen-lockfile

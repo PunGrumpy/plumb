@@ -1,0 +1,21 @@
+name: Feature request
+description: Suggest a new command, check or layer for plumb to trace
+labels: ["enhancement"]
+
+body:
+  - type: textarea
+    attributes:
+      label: What problem do you want plumb to solve?
+      description: "Example: When a VM can't reach the metadata service, I check the link-local route on the vRouter by hand."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How would you like it to work?
+      description: The command, flag or output you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: The OpenStack and OpenSDN APIs involved, or links to their docs.

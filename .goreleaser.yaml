@@ -1,0 +1,32 @@
+# GoReleaser runs after release-please tags a version. It builds the same
+# static binaries as `make dist` and attaches them to the GitHub release.
+version: 2
+project_name: plumb
+
+builds:
+  - main: ./cmd/plumb
+    binary: plumb
+    env: [CGO_ENABLED=0]
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Tag }}
+      # Points the update notice at this repository's latest release.
+      - -X main.updateURL={{ with envOrDefault "GITHUB_REPOSITORY" "" }}https://api.github.com/repos/{{ . }}/releases/latest{{ end }}
+
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files: [README.md]
+
+checksum:
+  name_template: checksums.txt
+
+# release-please writes CHANGELOG.md and the release notes.
+changelog:
+  disable: true
+
+release:
+  mode: keep-existing
